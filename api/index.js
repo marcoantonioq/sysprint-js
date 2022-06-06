@@ -3,11 +3,15 @@ import { Object } from 'core-js';
 import express from 'express';
 import axios from 'axios';
 const jwt = require('jsonwebtoken');
+const fileUpload = require('express-fileupload');
+const { v4: uuidv4 } = require('uuid');
 
 const users = {};
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 // eslint-disable-next-line require-await
 async function verifyJWT(req, res, next) {
@@ -68,7 +72,7 @@ app.get('/users/users', verifyJWT, (req, res) => {
 });
 
 // [GET] /user
-app.post('/users/token', (req, res) => {
+app.post('/users/token', verifyJWT, (req, res) => {
   const { token } = req.body;
   const email = Object.keys(users).find((email) => {
     return users[email].data.token.token === token;
@@ -82,7 +86,7 @@ app.post('/logout', (_req, res) => {
 });
 
 // APP
-app.get('/printers', verifyJWT, (_req, res) => {
+app.get('/printers', (_req, res) => {
   // eslint-disable-next-line no-console
   axios.get(`${process.env.CUPS_URL}/printers`).then((response) => {
     const printers = response.data
@@ -100,6 +104,35 @@ app.get('/printers', verifyJWT, (_req, res) => {
       });
     res.json({ printers: printers });
   });
+});
+
+try {
+  app.post('/print', (req, res) => {
+    // const { token } = req.body;
+    // eslint-disable-next-line no-console
+    console.log('Body::', JSON.stringify(req.body));
+    // eslint-disable-next-line no-console
+    console.log('Files::', JSON.stringify(req.files));
+    const { nome, site } = req.body;
+    res.json({ nome, site });
+  });
+} catch (e) {
+  console.log('Erro: ', e);
+}
+
+app.post('/upload', (req, res) => {
+  if (!req.files) {
+    res.status(400).send('Sem arquivos!');
+  }
+  // eslint-disable-next-line no-console
+  console.log(req.files);
+
+  const img = req.files.file;
+  const filename = uuidv4(req.files?.file.name);
+  const ext = req.files?.file.mimetype.split('/')[1];
+
+  img.mv(`upload/${filename}.${ext}`);
+  return res.json({ msg: 'Ok' });
 });
 
 // Error handler

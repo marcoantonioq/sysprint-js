@@ -27,7 +27,7 @@ export default {
     { src: '@/plugins/axios.plugin' },
     { src: '@/plugins/dayjs.plugin' },
     { src: '@/plugins/services.plugin' },
-    { src: '@/plugins/global-mixins.js' },
+    { src: '@/plugins/global.mixins' },
   ],
 
   components: true,

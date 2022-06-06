@@ -37,9 +37,6 @@ export const actions = {
       await store.commit('auth/LOGOUT');
     }
   },
-  print({ commit, dispatch }, message) {
-    this.$hello(message);
-  },
   update({ commit }, payload) {
     this.$axios.$get('/api/printers').then((printers) => {
       commit('updatePrinters', printers.printers);
@@ -51,5 +48,21 @@ export const actions = {
   },
   toggle({ commit }, payload) {
     commit('toggle', payload);
+  },
+  print({ commit, dispatch }, payload) {
+    // eslint-disable-next-line no-console
+    console.log('Imprimindo:::', payload);
+    const formData = new FormData();
+    formData.append('file', payload.files[0]);
+    this.$axios.$post('/api/upload', formData);
+
+    // this.$axios({
+    //   method: 'post',
+    //   url: '/api/print',
+    //   data: payload,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // });
   },
 };
