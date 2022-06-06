@@ -3,8 +3,8 @@
     <v-main>
       <v-container>
         <NuxtLink to="/">Inicial</NuxtLink>
-        <NuxtLink to="/login">Login</NuxtLink>
-        <NuxtLink to="/secure">Perfil</NuxtLink>
+        <NuxtLink to="/inspire">Inspire</NuxtLink>
+        <NuxtLink to="/auth/login">Perfil</NuxtLink>
         <Nuxt />
       </v-container>
     </v-main>

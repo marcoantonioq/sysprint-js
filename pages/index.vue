@@ -9,13 +9,9 @@
 <script>
 import Printers from '../components/Printers.vue';
 export default {
-  auth: false,
-  name: 'Inicial',
-  middleware: ['auth', 'printers'],
+  name: 'PageHome',
   components: { Printers },
-  mounted() {
-    console.log(this.$dayjs().format());
-  },
+  middleware: 'protected',
 };
 </script>
 

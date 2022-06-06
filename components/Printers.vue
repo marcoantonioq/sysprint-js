@@ -3,15 +3,15 @@
     <div class="v-row">
       <v-form ref="form" lazy-validation>
         <v-file-input
-          class="file"
           v-model="form.files"
-          @change="onFileChange"
+          class="file"
           placeholder="Enviar seus documentos"
           label="Arquivo (PDF)"
           multiple
           prepend-icon="mdi-paperclip"
+          @change="onFileChange"
         >
-          <template v-slot:selection="{ text }">
+          <template #selection="{ text }">
             <v-chip small label color="primary">
               {{ text }}
             </v-chip>
@@ -20,14 +20,14 @@
 
         <div v-show="form.files.length > 0">
           <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <div class="d-flex justify-space-around flex-wrap printers">
                 <a
-                  class="d-flex flex-column align-content-center text-center"
                   v-for="(el, i) in printers"
-                  @click="toggle(el)"
                   :key="i"
+                  class="d-flex flex-column align-content-center text-center"
                   v-bind="attrs"
+                  @click="toggle(el)"
                   v-on="on"
                 >
                   <div>
@@ -56,7 +56,7 @@
               @click="sending = true"
             >
               Imprimir
-              <template v-slot:loader>
+              <template #loader>
                 <span>Enviando...</span>
               </template>
             </v-btn>
@@ -104,23 +104,16 @@
           </div>
         </div>
       </v-form>
-      {{ printers }}
     </div>
     <button @click="reloadPrinters()">Reload</button>
   </div>
 </template>
 
 <script>
-import { required, minLength } from '@vuelidate/validators';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: 'Printers',
-  validations: {
-    form: {
-      copies: { required, minLength: minLength(1) },
-    },
-  },
+  name: 'ComponentePrinters',
   data: () => ({
     form: {
       files: [],
@@ -144,6 +137,31 @@ export default {
     sending: false,
     details: false,
   }),
+  computed: {
+    ...mapGetters(['printers']),
+    countPrinterSelected() {
+      return this.printers.reduce((ac, pr) => {
+        if (pr.selected) ac++;
+        return ac;
+      }, 0);
+    },
+  },
+  watch: {
+    details() {},
+    sending() {
+      if (this.sending) {
+        // log('Imprimindo!!!');
+        setTimeout(() => {
+          this.sending = false;
+        }, 5000);
+      } else {
+        // log('Impresso!!!');
+      }
+    },
+  },
+  mounted() {
+    this.reloadPrinters();
+  },
   methods: {
     ...mapActions(['update', 'remove', 'toggle']),
     onFileChange(files) {
@@ -155,47 +173,8 @@ export default {
       this.$hello('There');
     },
     async reloadPrinters() {
-      let data = await this.$printers.getPrinters();
-      console.log(data);
+      await this.$store.dispatch('update');
     },
-  },
-  watch: {
-    details() {
-      console.log(this.details);
-    },
-    sending() {
-      if (this.sending) {
-        console.log('Imprimindo!!!');
-        setTimeout(() => {
-          this.sending = false;
-        }, 5000);
-      } else {
-        console.log('Impresso!!!');
-      }
-    },
-  },
-  computed: {
-    ...mapGetters(['printers']),
-    countPrinterSelected: function () {
-      return this.printers.reduce((ac, pr) => {
-        if (pr.selected) ac++;
-        return ac;
-      }, 0);
-    },
-  },
-  asyncData({ $printers, $logging }) {
-    console.log('ASDSA:', $printers);
-    // let data = await $printers.getPrinters();
-    // $logging.log('Dados recebidos::: ', data);
-    // console.log('Teste::', data, $logging);
-    return [];
-  },
-  created() {
-    this.$logging.log('Component created!');
-  },
-  mounted() {
-    // this.$hello('Browser');
-    // this.$store.dispatch('print', 'from mounted()');
   },
 };
 </script>

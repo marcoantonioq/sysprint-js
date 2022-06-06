@@ -1,119 +1,79 @@
+/* eslint-disable object-shorthand */
+import { Object } from 'core-js';
 import express from 'express';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-// import jwt from 'express-jwt';
-var { expressjwt: jwt } = require('express-jwt');
-import jsonwebtoken from 'jsonwebtoken';
+import axios from 'axios';
+const jwt = require('jsonwebtoken');
 
-// Create app
+const users = {};
+
 const app = express();
+app.use(express.json());
 
-app.get('/date', (req, res) => {
+// eslint-disable-next-line require-await
+async function verifyJWT(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token)
+    return res.status(401).json({ auth: false, message: 'No token provided.' });
+  jwt.verify(token, process.env.API_SECRETE, function (err, decoded) {
+    if (err)
+      return res
+        .status(500)
+        .json({ auth: false, message: 'Failed to authenticate token.' });
+    req.userId = decoded.id;
+    next();
+  });
+}
+
+app.get('/date', verifyJWT, (req, res) => {
   res.json({ date: new Date() });
 });
 
-// Install middleware
-app.use(cookieParser());
-app.use(bodyParser.json());
+app.post('/login', (req, res, next) => {
+  const { email } = req.body;
+  const token = jwt.sign({ userId: 1, email: email }, process.env.API_SECRETE, {
+    expiresIn: '2h',
+  });
 
-// JWT middleware
-app.use(
-  jwt({
-    secret: 'dummy',
-    algorithms: ['sha1', 'RS256', 'HS256'],
-  }).unless({
-    path: ['/api/auth/login', '/api/auth/refresh'],
-  })
-);
-
-// Refresh tokens
-const refreshTokens = {};
-
-// -- Routes --
-
-// [POST] /login
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const valid = username.length && password === '123';
-  const expiresIn = 15;
-  const refreshToken =
-    Math.floor(Math.random() * (1000000000000000 - 1 + 1)) + 1;
-
-  if (!valid) {
-    throw new Error('Invalid username or password');
-  }
-
-  const accessToken = jsonwebtoken.sign(
-    {
-      username,
-      picture: 'https://github.com/nuxt.png',
-      name: 'User ' + username,
-      scope: ['test', 'user'],
-    },
-    'dummy',
-    {
-      expiresIn,
-    }
-  );
-
-  refreshTokens[refreshToken] = {
-    accessToken,
-    user: {
-      username,
-      picture: 'https://github.com/nuxt.png',
-      name: 'User ' + username,
+  const user = {
+    success: true,
+    data: {
+      token: {
+        token: token,
+        type: 'Bearer',
+      },
+      user: {
+        username: email,
+        firstName: 'firstName',
+        lastName: 'latName',
+      },
     },
   };
 
-  res.json({
-    token: {
-      accessToken,
-      refreshToken,
-    },
-  });
-});
+  users[email] = user;
 
-app.post('/refresh', (req, res) => {
-  const { refreshToken } = req.body;
-
-  if (refreshToken in refreshTokens) {
-    const user = refreshTokens[refreshToken].user;
-    const expiresIn = 15;
-    const newRefreshToken =
-      Math.floor(Math.random() * (1000000000000000 - 1 + 1)) + 1;
-    delete refreshTokens[refreshToken];
-    const accessToken = jsonwebtoken.sign(
-      {
-        user: user.username,
-        picture: 'https://github.com/nuxt.png',
-        name: 'User ' + user.username,
-        scope: ['test', 'user'],
-      },
-      'dummy',
-      {
-        expiresIn,
-      }
-    );
-
-    refreshTokens[newRefreshToken] = {
-      accessToken,
-      user,
-    };
-
-    res.json({
-      token: {
-        accessToken,
-        refreshToken: newRefreshToken,
-      },
-    });
-  } else {
-    res.sendStatus(401);
-  }
+  res.status(200).json(user);
 });
 
 // [GET] /user
-app.get('/user', (req, res) => {
-  res.json({ user: req.user });
+app.get('/users/user', (req, res) => {
+  const email = Object.keys(users).find((email) => {
+    return users[email].data.token.token === req.headers.authorization;
+  });
+  res.json(users[email]);
+});
+
+// [GET] /users/users
+app.get('/users/users', verifyJWT, (req, res) => {
+  res.json(users);
+});
+
+// [GET] /user
+app.post('/users/token', (req, res) => {
+  const { token } = req.body;
+  const email = Object.keys(users).find((email) => {
+    return users[email].data.token.token === token;
+  });
+  res.json(users[email]);
 });
 
 // [POST] /logout
@@ -121,14 +81,31 @@ app.post('/logout', (_req, res) => {
   res.json({ status: 'OK' });
 });
 
+// APP
+app.get('/printers', verifyJWT, (_req, res) => {
+  // eslint-disable-next-line no-console
+  axios.get(`${process.env.CUPS_URL}/printers`).then((response) => {
+    const printers = response.data
+      .match(/<TR><TD><A HREF="\/printers\/([a-zA-Z0-9-^"]+)">/gm)
+      .map((printer) => {
+        return /"\/printers\/([a-zA-Z0-9-^"]+)"/.exec(printer);
+      })
+      .map((printer) => {
+        return {
+          icon: '/img/print.png',
+          name: printer[1],
+          path: printer[0],
+          selected: false,
+        };
+      });
+    res.json({ printers: printers });
+  });
+});
+
 // Error handler
 app.use((err, _req, res) => {
-  console.error(err); // eslint-disable-line no-console
   res.status(401).send(err + '');
 });
 
 // -- export app --
-export default {
-  path: '/api/auth',
-  handler: app,
-};
+export default app;
