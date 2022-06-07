@@ -7,7 +7,7 @@ import {
   createUser,
   getUser,
 } from '../plugins/services/auth';
-import { getPrinters, sendPrint } from '../plugins/services/print';
+import { getPrinters, sendPrint, getJob } from '../plugins/services/print';
 
 const app = express();
 app.use(express.json());
@@ -46,7 +46,16 @@ app.get('/printers', (_req, res) => {
 });
 
 app.post('/print', (req, res) => {
-  res.json(sendPrint(req.files, req.body));
+  sendPrint(req.files, req.body).then((result) => {
+    res.json(result);
+  });
+});
+
+app.get('/jobs/:print/:id', (req, res) => {
+  const { print, id } = req.params;
+  getJob(print, id).then((result) => {
+    res.json(result);
+  });
 });
 
 app.post('/upload', (req, res) => {
