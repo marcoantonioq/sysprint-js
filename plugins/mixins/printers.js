@@ -37,7 +37,8 @@ export default {
     details() {},
     sending() {
       if (this.sending) {
-        this.$store.dispatch('print', this.form);
+        const form = this.$formData.jsonToFormData(this.form);
+        this.$store.dispatch('print', form);
         this.sending = false;
       } else {
         // eslint-disable-next-line no-console
@@ -47,8 +48,6 @@ export default {
   },
   mounted() {
     this.reloadPrinters();
-    // eslint-disable-next-line no-console
-    console.log(this.printerss);
   },
   methods: {
     ...mapActions(['update', 'remove', 'toggle']),

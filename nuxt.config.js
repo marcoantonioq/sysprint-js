@@ -24,10 +24,10 @@ export default {
   css: [],
 
   plugins: [
-    { src: '@/plugins/axios.plugin' },
-    { src: '@/plugins/dayjs.plugin' },
-    { src: '@/plugins/services.plugin' },
-    { src: '@/plugins/global.mixins' },
+    { src: '@/plugins/axios' },
+    { src: '@/plugins/dayjs' },
+    { src: '@/plugins/services/services' },
+    { src: '@/plugins/mixins/global' },
   ],
 
   components: true,

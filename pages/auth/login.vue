@@ -55,7 +55,7 @@ export default {
     async onLogin() {
       try {
         const { data } = await this.$axios.$post('/api/login', this.form);
-        await this.$store.commit('auth/SET_TOKEN', data.token.token);
+        await this.$store.commit('auth/SET_TOKEN', data.token);
         await this.$store.commit('auth/SET_USER', data.user);
         const { form } = this.$route.query;
         if (form) {

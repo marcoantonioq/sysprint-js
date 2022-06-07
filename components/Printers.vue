@@ -14,7 +14,6 @@
           label="Arquivo (PDF)"
           multiple
           prepend-icon="mdi-paperclip"
-          @change="onFileChange"
         >
           <template #selection="{ text }">
             <v-chip small label color="primary">
@@ -115,7 +114,7 @@
 </template>
 
 <script>
-import printers from '~/plugins/printers.mixins';
+import printers from '~/plugins/mixins/printers';
 
 export default {
   name: 'ComponentePrinters',

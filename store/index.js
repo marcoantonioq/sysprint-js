@@ -1,6 +1,6 @@
 export const state = () => ({
   printers: [],
-  FILES_FORMATS: ['application/pdf'],
+  FILES_FORMATS: ['application/pdf', 'text/plain'],
 });
 
 export const getters = {
@@ -49,20 +49,7 @@ export const actions = {
   toggle({ commit }, payload) {
     commit('toggle', payload);
   },
-  print({ commit, dispatch }, payload) {
-    // eslint-disable-next-line no-console
-    console.log('Imprimindo:::', payload);
-    const formData = new FormData();
-    formData.append('file', payload.files[0]);
-    this.$axios.$post('/api/upload', formData);
-
-    // this.$axios({
-    //   method: 'post',
-    //   url: '/api/print',
-    //   data: payload,
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // });
+  print({ commit, dispatch }, form) {
+    this.$axios.$post('/api/print', form);
   },
 };
