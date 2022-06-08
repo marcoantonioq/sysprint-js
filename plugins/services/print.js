@@ -1,4 +1,6 @@
 import axios from 'axios';
+const fs = require('fs');
+const Printer = require('ipp-printer');
 
 const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];
@@ -73,7 +75,35 @@ export async function getJob(print = '', id = '') {
 
 // eslint-disable-next-line require-await
 export async function sendPrint(files, config) {
-  console.log('Imprimir::: ', files);
-  console.log('Config::: ', config);
+  // eslint-disable-next-line no-console
+  // console.log('Imprimir::: ', files);
+  // eslint-disable-next-line no-console
+  // console.log('Config::: ', config);
+
+  const printer = new Printer('ADM');
+
+  const filename = 'job-id.ps'; // .ps = PostScript
+  fs.open(filename, 'w', function (err, file) {
+    if (err) throw err;
+    // eslint-disable-next-line no-console
+    console.log('File is opened in write mode.');
+  });
+  fs.writeFile(filename, 'Ok', (err) => {
+    if (err) throw err;
+    // eslint-disable-next-line no-console
+    console.log('File is created successfully.');
+  });
+
+  const file = fs.createWriteStream(filename);
+
+  printer.on('job', function (job) {
+    // eslint-disable-next-line no-console
+    console.log('[job %d] Printing document: %s', job.id, job.name);
+    job.on('end', function () {
+      // eslint-disable-next-line no-console
+      console.log('[job %d] Document saved as %s', job.id, filename);
+    });
+    job.pipe(file);
+  });
   return { msg: 'impressão ok' };
 }
