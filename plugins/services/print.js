@@ -1,6 +1,6 @@
 import axios from 'axios';
-const fs = require('fs');
-const Printer = require('ipp-printer');
+const ipp = require('@sealsystems/ipp');
+const PDFDocument = require('pdfkit');
 
 const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];
@@ -9,7 +9,7 @@ function getResponse(response) {
   return {
     ...{
       msg: '',
-      values: [],
+      data: [],
       status: 1,
     },
     ...response,
@@ -17,8 +17,9 @@ function getResponse(response) {
 }
 
 export async function getPrinters() {
-  const response = await axios.get(`${CUPS_URL}/printers`);
-  const printers = response.data
+  const response = getResponse();
+  const result = await axios.get(`${CUPS_URL}/printers`);
+  response.data = result.data
     .match(/<TR><TD><A HREF="\/printers\/([a-zA-Z0-9-^"]+)">/gm)
     .map((printer) => {
       return /"\/printers\/([a-zA-Z0-9-^"]+)"/.exec(printer);
@@ -31,7 +32,7 @@ export async function getPrinters() {
         selected: false,
       };
     });
-  return { printers };
+  return response;
 }
 
 // eslint-disable-next-line require-await
@@ -45,7 +46,7 @@ export async function getJob(print = '', id = '') {
     result.status = status;
 
     try {
-      result.values = data
+      result.data = data
         .replace(/(\r\n|\n|\r)/gm, '')
         .replace(/&nbsp;/g, '')
         .match(/<table.*?\/table>/gim)
@@ -80,30 +81,21 @@ export async function sendPrint(files, config) {
   // eslint-disable-next-line no-console
   // console.log('Config::: ', config);
 
-  const printer = new Printer('ADM');
-
-  const filename = 'job-id.ps'; // .ps = PostScript
-  fs.open(filename, 'w', function (err, file) {
-    if (err) throw err;
+  const printer = ipp.Printer('http://localhost:631/printers/PDF');
+  const data = Buffer.from('Ok');
+  const msg = {
+    'operation-attributes-tag': {
+      'requesting-user-name': 'William',
+      'job-name': 'My Test Job',
+      'document-format': 'application/pdf',
+    },
+    data,
+  };
+  // eslint-disable-next-line node/handle-callback-err
+  printer.execute('Print-Job', msg, function (err, res) {
     // eslint-disable-next-line no-console
-    console.log('File is opened in write mode.');
-  });
-  fs.writeFile(filename, 'Ok', (err) => {
-    if (err) throw err;
-    // eslint-disable-next-line no-console
-    console.log('File is created successfully.');
+    console.log(res);
   });
 
-  const file = fs.createWriteStream(filename);
-
-  printer.on('job', function (job) {
-    // eslint-disable-next-line no-console
-    console.log('[job %d] Printing document: %s', job.id, job.name);
-    job.on('end', function () {
-      // eslint-disable-next-line no-console
-      console.log('[job %d] Document saved as %s', job.id, filename);
-    });
-    job.pipe(file);
-  });
   return { msg: 'impressão ok' };
 }

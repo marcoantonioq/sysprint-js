@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapGetters(['printers']),
     countPrinterSelected() {
-      return this.printers.reduce((ac, pr) => {
+      return this.printers?.reduce((ac, pr) => {
         if (pr.selected) ac++;
         return ac;
       }, 0);

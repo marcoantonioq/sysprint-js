@@ -24,7 +24,7 @@ app.post('/login', (req, res, next) => {
 });
 
 // [GET] /user
-app.get('/users/user', (req, res) => {
+app.get('/users/user', verifyJWT, (req, res) => {
   res.json(getUser(req.headers.authorization));
 });
 
@@ -34,12 +34,12 @@ app.get('/users/users', verifyJWT, (req, res) => {
 });
 
 // [POST] /logout
-app.post('/logout', (_req, res) => {
+app.post('/logout', verifyJWT, (_req, res) => {
   res.json({ status: 'OK' });
 });
 
 // APP
-app.get('/printers', (_req, res) => {
+app.get('/printers', verifyJWT, (_req, res) => {
   getPrinters().then((result) => {
     res.json(result);
   });
@@ -51,14 +51,14 @@ app.post('/print', (req, res) => {
   });
 });
 
-app.get('/jobs/:print/:id', (req, res) => {
+app.get('/jobs/:print/:id', verifyJWT, (req, res) => {
   const { print, id } = req.params;
   getJob(print, id).then((result) => {
     res.json(result);
   });
 });
 
-app.post('/upload', (req, res) => {
+app.post('/upload', verifyJWT, (req, res) => {
   const result = { msg: 'Ok' };
   try {
     upLoadFiles(req.files);

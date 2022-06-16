@@ -22,16 +22,6 @@ export default {
       data: null,
     };
   },
-  methods: {
-    async fetchSomething() {
-      const data = await this.$axios.$get('/api/users/user');
-      const token = this.$cookies.get('token');
-
-      // eslint-disable-next-line no-console
-      console.log('token', token);
-      // eslint-disable-next-line no-console
-      console.log('dasta', data);
-    },
-  },
+  methods: {},
 };
 </script>

@@ -38,8 +38,8 @@ export const actions = {
     }
   },
   update({ commit }, payload) {
-    this.$axios.$get('/api/printers').then((printers) => {
-      commit('updatePrinters', printers.printers);
+    this.$axios.$get('/api/printers').then(({ data: printers }) => {
+      commit('updatePrinters', printers);
     });
     commit('update', payload);
   },
