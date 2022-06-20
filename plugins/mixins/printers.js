@@ -3,6 +3,7 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
   data: () => ({
     form: {
+      user: 'user',
       files: [],
       copies: 1,
       pages: '',
