@@ -37,41 +37,30 @@ export async function getPrinters() {
 
 // eslint-disable-next-line require-await
 export async function getJob(print = '', id = '') {
-  const result = getResponse();
-  if (id) {
-    const url = `${CUPS_URL}/printers/${print}?WHICH_JOBS=all&QUERY=${id}`;
-
-    const { status, data } = await axios.get(url);
-
-    result.status = status;
-
-    try {
-      result.data = data
-        .replace(/(\r\n|\n|\r)/gm, '')
-        .replace(/&nbsp;/g, '')
-        .match(/<table.*?\/table>/gim)
-        .find((el, id) => id === 1)
-        .match(/<tr.*?\/tr>/gim)
-        .map((job) => {
-          return job.match(/<td.*?\/td>/gim);
-        })
-        .filter((el) => !!el)
-        .map((job) => {
-          return job.map((el) => {
-            return el.replace(/<\/?[^>]+(>|$)/gim, '');
-          });
-        })
-        .find((job) => {
-          return `${job[0]}`.toUpperCase() === `${print}-${id}`.toUpperCase();
-        });
-    } catch (e) {
+  const printer = ipp.Printer('http://localhost:631/printers/PDF');
+  return printer.execute(
+    'Get-Job-Attributes',
+    {
+      'operation-attributes-tag': {
+        'which-jobs': 'completed',
+        'job-id': id,
+        'requested-attributes': [
+          'job-id',
+          'job-uri',
+          'job-state',
+          'job-state-reasons',
+          'job-name',
+          'job-originating-user-name',
+          'job-media-sheets-completed',
+        ],
+      },
+    },
+    function (err, res) {
       // eslint-disable-next-line no-console
-      console.log('Error find jobs print!', e);
-      result.status = 400;
+      console.log('Resp:::', res || err);
+      return res || err;
     }
-  }
-
-  return result;
+  );
 }
 
 // eslint-disable-next-line require-await
@@ -82,20 +71,45 @@ export async function sendPrint(files, config) {
   // console.log('Config::: ', config);
 
   const printer = ipp.Printer('http://localhost:631/printers/PDF');
-  const data = Buffer.from('Ok');
-  const msg = {
-    'operation-attributes-tag': {
-      'requesting-user-name': 'William',
-      'job-name': 'My Test Job',
-      'document-format': 'application/pdf',
-    },
-    data,
-  };
-  // eslint-disable-next-line node/handle-callback-err
-  printer.execute('Print-Job', msg, function (err, res) {
-    // eslint-disable-next-line no-console
-    console.log(res);
-  });
+  // const data = Buffer.from('Ok');
+  // const msg = {
+  //   'operation-attributes-tag': {
+  //     'requesting-user-name': 'William',
+  //     'job-name': 'My Test Job',
+  //     'document-format': 'application/pdf',
+  //   },
+  //   data,
+  // };
+  // // eslint-disable-next-line node/handle-callback-err
+  // printer.execute('Print-Job', msg, function (err, res) {
+  //   // eslint-disable-next-line no-console
+  //   console.log('Resp:::', res);
+  //   // eslint-disable-next-line no-console
+  //   console.log('Err:::', err);
 
-  return { msg: 'impressão ok' };
+  // });
+
+  return printer.execute(
+    'Get-Jobs',
+    {
+      'operation-attributes-tag': {
+        'which-jobs': 'completed',
+        'job-id': 2,
+        'requested-attributes': [
+          'job-id',
+          'job-uri',
+          'job-state',
+          'job-state-reasons',
+          'job-name',
+          'job-originating-user-name',
+          'job-media-sheets-completed',
+        ],
+      },
+    },
+    function (err, res) {
+      // eslint-disable-next-line no-console
+      console.log('Resp:::', res || err);
+      return res || err;
+    }
+  );
 }

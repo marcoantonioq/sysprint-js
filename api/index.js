@@ -51,7 +51,7 @@ app.post('/print', (req, res) => {
   });
 });
 
-app.get('/jobs/:print/:id', verifyJWT, (req, res) => {
+app.get('/jobs/:print/:id', (req, res) => {
   const { print, id } = req.params;
   getJob(print, id).then((result) => {
     res.json(result);
