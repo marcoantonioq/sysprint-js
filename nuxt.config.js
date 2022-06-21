@@ -26,7 +26,7 @@ export default {
   plugins: [
     { src: '@/plugins/axios' },
     { src: '@/plugins/dayjs' },
-    { src: '@/plugins/services/services' },
+    { src: '@/plugins/services' },
     { src: '@/plugins/mixins/global' },
   ],
 
