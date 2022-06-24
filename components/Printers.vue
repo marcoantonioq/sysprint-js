@@ -142,7 +142,7 @@ img {
     }
     .check {
       position: absolute;
-      top: 112px;
+      top: 125px;
     }
     .subtitle {
       position: relative;

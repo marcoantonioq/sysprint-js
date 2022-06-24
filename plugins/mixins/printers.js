@@ -38,7 +38,13 @@ export default {
     details() {},
     sending() {
       if (this.sending) {
-        const form = this.$formData.jsonToFormData(this.form);
+        const form = this.$formData.jsonToFormData({
+          ...this.form,
+          printers: this.printers
+            ?.filter((pr) => pr.selected)
+            ?.map((el) => el.name)
+            ?.join(','),
+        });
         this.$store.dispatch('print', form);
         this.sending = false;
       } else {
