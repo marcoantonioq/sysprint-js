@@ -8,7 +8,7 @@ export const options = {
   double_sided: '-o sides=',
   page_set: '-o page-set=',
   media: '-o media=',
-  // orientation: '-o orientation-requested=',
+  orientation: '-o orientation-requested=',
 };
 
 export function getSettings(config) {

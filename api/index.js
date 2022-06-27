@@ -1,13 +1,8 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import { upLoadFiles } from '../lib/formdata';
-import {
-  verifyJWT,
-  users,
-  createUser,
-  getUser,
-} from '../lib/auth';
-import { getPrinters, sendPrint, getJob } from '../lib/print';
+import { verifyJWT, users, createUser, getUser } from '../lib/auth';
+import { getPrinters, sendPrint, getJob } from './services/print';
 
 const app = express();
 app.use(express.json());

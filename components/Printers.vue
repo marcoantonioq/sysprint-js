@@ -102,7 +102,7 @@
             <v-select
               v-model="form.orientation"
               :items="list.orientation"
-              label="Orienthis.$axiostação"
+              label="Orientação"
               prepend-icon="mdi-flip-vertical"
             ></v-select>
           </div>

@@ -10,7 +10,7 @@ export default {
       double_sided: '',
       page_set: '',
       media: 'A4',
-      orientation: 'Retrato',
+      orientation: '',
     },
     list: {
       double_sided: [
@@ -20,7 +20,7 @@ export default {
       ],
       page_set: ['', 'Folhas pares', 'Folhas impares'],
       media: ['A4', 'A3'],
-      orientation: ['Retrato', 'Paisagem'],
+      orientation: ['', 'Retrato', 'Paisagem'],
     },
     sending: false,
     details: false,
@@ -38,13 +38,21 @@ export default {
     details() {},
     sending() {
       if (this.sending) {
-        const form = this.$formData.jsonToFormData({
+        let form = {
           ...this.form,
           printers: this.printers
             ?.filter((pr) => pr.selected)
             ?.map((el) => el.name)
             ?.join(','),
-        });
+        };
+        if (form.double_sided)
+          form.double_sided =
+            form.double_sided === 'Sim - Virar na borda(paisagem)'
+              ? 'two-sided-short-edge'
+              : 'two-sided-long-edge';
+        if (form.orientation)
+          form.orientation = form.orientation === 'Paisagem' ? '4' : '3';
+        form = this.$formData.jsonToFormData(form);
         this.$store.dispatch('print', form);
         this.sending = false;
       } else {

@@ -1,6 +1,7 @@
 /* eslint-disable no-throw-literal */
 import axios from 'axios';
 import { getSettings, getFiles } from './enum/options';
+import { states } from './enum/states';
 const { exec } = require('child_process');
 const ipp = require('@sealsystems/ipp');
 
@@ -64,37 +65,40 @@ export async function getJob(print = '', id = '') {
 // eslint-disable-next-line require-await
 export async function sendPrint(upload, config) {
   const response = getResponse();
-  try {
-    const settings = getSettings(config);
-    const files = getFiles(upload);
-    settings.forEach((setting) => {
-      files.forEach((file) => {
-        // console.log('run:: ', `lp ${setting.params} ${file.path}`);
-        exec(`lp ${setting.params} ${file.path}`, (error, stdout, stderr) => {
+  const settings = getSettings(config);
+  settings.forEach((setting) => {
+    getFiles(upload).forEach((file) => {
+      exec(`lp ${setting.params} ${file.path}`, (error, stdout, stderr) => {
+        try {
+          console.log('run:: ', `lp ${setting.params} ${file.path}\n`, stdout);
+          settings.job = stdout.match(/[a-z]+-\d+/gi)[0].match(/\d+/gi)[0];
           if (error) throw `Erro exec lp: ${error.message}`;
           if (stderr) throw `Erro stderr lp: ${stderr}`;
-          console.log('Saída comando::: ', stdout);
-          settings.job = stdout.match(/[a-z]+-\d+/gi)[0].match(/\d+/gi)[0];
+          if (!settings.job) throw `JOB ${stdout} não identificado!`;
           const status = setInterval(function () {
             setting.printer.execute(
               'Get-Job-Attributes',
               { 'operation-attributes-tag': { 'job-id': settings.job } },
-              function (err, res) {
-                const completed =
-                  res['job-attributes-tag']['job-state'] === 'completed';
-                if (completed) {
-                  console.log('Resp:::', res || err);
-                  clearInterval(status);
+              // eslint-disable-next-line node/handle-callback-err
+              function (_err, res) {
+                try {
+                  const job = res['job-attributes-tag'];
+                  states[job['job-state']](job);
+                  if (['completed', 'canceled'].includes(job['job-state'])) {
+                    clearInterval(status);
+                  }
+                } catch (e) {
+                  console.log(`Erro ao processar: ${e}`);
                 }
               }
             );
-          }, 3000);
-        });
+          }, 5000);
+        } catch (e) {
+          response.msg = 'SendPrint: ' + e;
+        }
       });
     });
-  } catch (e) {
-    response.msg = 'Erro: ' + e;
-  }
+  });
 
   return response;
 }
