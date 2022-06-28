@@ -1,9 +1,10 @@
 /* eslint-disable no-throw-literal */
+import { exec } from 'child_process';
 import axios from 'axios';
+import ipp from '@sealsystems/ipp';
 import { getSettings, getFiles } from './enum/options';
 import { states } from './enum/states';
-const { exec } = require('child_process');
-const ipp = require('@sealsystems/ipp');
+import { Users } from './db';
 
 const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];
@@ -68,35 +69,49 @@ export async function sendPrint(upload, config) {
   const settings = getSettings(config);
   settings.forEach((setting) => {
     getFiles(upload).forEach((file) => {
-      exec(`lp ${setting.params} ${file.path}`, (error, stdout, stderr) => {
-        try {
-          console.log('run:: ', `lp ${setting.params} ${file.path}\n`, stdout);
-          settings.job = stdout.match(/[a-z]+-\d+/gi)[0].match(/\d+/gi)[0];
-          if (error) throw `Erro exec lp: ${error.message}`;
-          if (stderr) throw `Erro stderr lp: ${stderr}`;
-          if (!settings.job) throw `JOB ${stdout} não identificado!`;
-          const status = setInterval(function () {
-            setting.printer.execute(
-              'Get-Job-Attributes',
-              { 'operation-attributes-tag': { 'job-id': settings.job } },
-              // eslint-disable-next-line node/handle-callback-err
-              function (_err, res) {
-                try {
-                  const job = res['job-attributes-tag'];
-                  states[job['job-state']](job);
-                  if (['completed', 'canceled'].includes(job['job-state'])) {
-                    clearInterval(status);
-                  }
-                } catch (e) {
-                  console.log(`Erro ao processar: ${e}`);
-                }
-              }
-            );
-          }, 5000);
-        } catch (e) {
-          response.msg = 'SendPrint: ' + e;
-        }
-      });
+      console.log('run:: ', `lp ${setting.params} ${file.path}`);
+      // // eslint-disable-next-line new-cap
+      new Users({
+        name: 'Marco Antônio',
+        username: '1934155',
+        email: 'marco.queiroz@ifg.edu.br',
+      })
+        .save()
+        .then(() => {
+          console.log('Usuário criado com sucesso!');
+        })
+        .catch((err) => {
+          console.log('Erro ao salvar: ', err);
+        });
+
+      // exec(`lp ${setting.params} ${file.path}`, (error, stdout, stderr) => {
+      //   try {
+      //     settings.job = stdout.match(/[a-z]+-\d+/gi)[0].match(/\d+/gi)[0];
+      //     if (error) throw `Erro exec lp: ${error.message}`;
+      //     if (stderr) throw `Erro stderr lp: ${stderr}`;
+      //     if (!settings.job) throw `JOB ${stdout} não identificado!`;
+      //     const status = setInterval(function () {
+      //       setting.printer.execute(
+      //         'Get-Job-Attributes',
+      //         { 'operation-attributes-tag': { 'job-id': settings.job } },
+      //         // eslint-disable-next-line node/handle-callback-err
+      //         function (_err, res) {
+      //           try {
+      //             const job = res['job-attributes-tag'];
+      //             states[job['job-state']](job);
+      //             if (['completed', 'canceled'].includes(job['job-state'])) {
+      //               clearInterval(status);
+      //             }
+      //           } catch (e) {
+      //             console.log(`Erro ao processar: ${e}`);
+      //           }
+      //         }
+      //       );
+      //     }, 5000);
+      //   } catch (e) {
+      //     response.msg = 'SendPrint: ' + e;
+      //   }
+      // });
     });
   });
 
