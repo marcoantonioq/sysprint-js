@@ -20,12 +20,18 @@ export async function verifyJWT(req, res, next) {
   });
 }
 
+export function deleteToke(req, res) {
+  const token = req.headers.authorization;
+  return res.json({ status: 'OK', token });
+}
+
 export function createToke(data, secrete, config) {
   return jwt.sign(data, secrete, config);
 }
 
-export function createUser(data, config = { expiresIn: '2h' }) {
-  const { username, email } = data;
+export function createUser({ body }, res) {
+  const config = { expiresIn: '2h' };
+  const { username, email } = body;
   const nick = username || email;
   const token = createToke({ userId: 1, username: nick }, secrete, config);
   const user = {
@@ -40,12 +46,13 @@ export function createUser(data, config = { expiresIn: '2h' }) {
     },
   };
   users[nick] = user;
-  return users[nick];
+  return res.status(200).json(users[nick]);
 }
 
-export function getUser(token) {
+export function getUser(req, res) {
+  const token = req.headers.authorization;
   const nick = Object.keys(users).find((key) => {
     return users[key].data.token === token;
   });
-  return users[nick];
+  res.json(users[nick]);
 }

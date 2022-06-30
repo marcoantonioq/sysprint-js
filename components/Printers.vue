@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import printers from '~/plugins/mixins/printers';
+import printers from '~/components/mixins/printers';
 
 export default {
   name: 'ComponentePrinters',

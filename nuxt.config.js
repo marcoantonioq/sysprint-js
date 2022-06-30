@@ -22,19 +22,18 @@ export default {
     },
   ],
   css: [],
-
   plugins: [
     { src: '@/plugins/axios' },
     { src: '@/plugins/dayjs' },
     { src: '@/plugins/services' },
-    { src: '@/plugins/mixins/global' },
+    { src: '@/plugins/global' },
   ],
 
   components: true,
 
   buildModules: ['@nuxtjs/vuetify', '@nuxtjs/eslint-module'],
 
-  modules: ['@nuxtjs/axios', 'cookie-universal-nuxt'],
+  modules: ['@nuxtjs/axios', 'cookie-universal-nuxt', 'nuxt-highcharts'],
 
   vuetify: {
     customVariables: ['~/assets/variables.scss'],

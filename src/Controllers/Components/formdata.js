@@ -47,7 +47,8 @@ export function jsonToFormData(data) {
  * @param {Array} files Arquivos[]
  * @param {String} path Pasta destino (Default: upload/)
  */
-export function upLoadFiles(files, path = 'upload/') {
+export function upLoadFiles({ files }, res) {
+  console.log(files);
   if (!files) {
     throw new UserException('Sem arquivos!');
   }
@@ -55,7 +56,7 @@ export function upLoadFiles(files, path = 'upload/') {
     const file = files[key];
     const filename = uuidv4(file.name);
     const ext = file.mimetype.split('/')[1];
-    file.mv(`${path}/${filename}.${ext}`);
+    file.mv(`upload/${filename}.${ext}`);
   });
 }
 

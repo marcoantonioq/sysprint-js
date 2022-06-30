@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const ipp = require('@sealsystems/ipp');
 
 export const options = {
@@ -29,9 +30,12 @@ export function getSettings(config) {
 
 export function getFiles(upload) {
   return Object.entries(upload).map(([key, file]) => {
-    const path = `./out/${file.name}`;
+    console.log(file);
+    const filename = uuidv4(file.name);
+    const ext = file.mimetype.split('/')[1];
+    const path = `out/${filename}.${ext}`;
     file.mv(path, function (err) {
-      if (err) throw new Error(`Erro ao mover arquivo ${file.name}!`);
+      if (err) console.log(`Erro ao mover arquivo ${file.name}: ${err}`);
     });
     return {
       ...file,

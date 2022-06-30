@@ -2,9 +2,11 @@
   <v-app>
     <v-main>
       <v-container>
-        <NuxtLink to="/">Inicial</NuxtLink>
-        <NuxtLink to="/inspire">Inspire</NuxtLink>
-        <NuxtLink to="/auth/login">Perfil</NuxtLink>
+        <v-row>
+          <NuxtLink to="/">Inicial</NuxtLink>
+          <NuxtLink to="/charts">Charts</NuxtLink>
+          <NuxtLink to="/auth/login">Perfil</NuxtLink>
+        </v-row>
         <Nuxt />
       </v-container>
     </v-main>

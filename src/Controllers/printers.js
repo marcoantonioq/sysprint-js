@@ -2,28 +2,18 @@
 import { exec } from 'child_process';
 import axios from 'axios';
 import ipp from '@sealsystems/ipp';
-import { getSettings, getFiles } from './enum/options';
-import { states } from './enum/states';
-import { Users } from './db';
+import { getSettings, getFiles } from './Components/options';
+import { states } from './Components/states';
+import { response } from './Components/response';
+const fs = require('fs');
 
 const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];
 
-function getResponse(response) {
-  return {
-    ...{
-      msg: '',
-      data: [],
-      status: 1,
-    },
-    ...response,
-  };
-}
-
-export async function getPrinters() {
-  const response = getResponse();
+export async function getPrinters(_req, res) {
+  const resp = response();
   const result = await axios.get(`${CUPS_URL}/printers`);
-  response.data = result.data
+  resp.data = result.data
     .match(/<TR><TD><A HREF="\/printers\/([a-zA-Z0-9-^"]+)">/gm)
     .map((printer) => {
       return /"\/printers\/([a-zA-Z0-9-^"]+)"/.exec(printer);
@@ -36,12 +26,12 @@ export async function getPrinters() {
         selected: false,
       };
     });
-  return response;
+  return res.json(resp);
 }
 
-// eslint-disable-next-line require-await
-export async function getJob(print = '', id = '') {
-  const printer = ipp.Printer('http://localhost:631/printers/ADM');
+export function getJob(req, res) {
+  const { print, id } = req.params;
+  const printer = ipp.Printer(`http://localhost:631/printers/${print}`);
   return printer.execute(
     'Get-Job-Attributes',
     {
@@ -55,35 +45,49 @@ export async function getJob(print = '', id = '') {
         ],
       },
     },
-    function (err, res) {
-      // eslint-disable-next-line no-console
-      console.log('Resp:::', res || err);
-      return res || err;
+    function (err, result) {
+      console.log('Resp:::', result || err);
+      res.json(result || err);
     }
   );
 }
 
-// eslint-disable-next-line require-await
-export async function sendPrint(upload, config) {
-  const response = getResponse();
-  const settings = getSettings(config);
-  settings.forEach((setting) => {
-    getFiles(upload).forEach((file) => {
-      console.log('run:: ', `lp ${setting.params} ${file.path}`);
-      // // eslint-disable-next-line new-cap
-      new Users({
-        name: 'Marco Antônio',
-        username: '1934155',
-        email: 'marco.queiroz@ifg.edu.br',
-      })
-        .save()
-        .then(() => {
-          console.log('Usuário criado com sucesso!');
-        })
-        .catch((err) => {
-          console.log('Erro ao salvar: ', err);
-        });
+export function sendPrint({ files, body }, res) {
+  const resp = response();
+  // const printer = ipp.Printer('http://localhost:631/printers/ADM');
 
+  // const msg = {
+  //   'operation-attributes-tag': {
+  //     limit: 100,
+  //     'which-jobs': 'completed',
+  //     'requested-attributes': [
+  //       'job-id',
+  //       'job-uri',
+  //       'job-state',
+  //       'job-state-reasons',
+  //       'job-name',
+  //       'job-originating-user-name',
+  //       'job-media-sheets-completed',
+  //     ],
+  //   },
+  // };
+
+  // printer.execute('Get-Jobs', msg, (e, r) => {
+  //   if (e) {
+  //     return console.log(e);
+  //   }
+  //   console.log(r);
+  // });
+  const settings = getSettings(body);
+  settings.forEach((setting) => {
+    getFiles(files).forEach((file) => {
+      console.log(`lp ${setting.params} ${file.path}`);
+
+      // fs.unlink(file.path, function (err) {
+      //   if (err) console.log('erro::', err);
+      //   // throw err;
+      //   console.log('File deleted!');
+      // });
       // exec(`lp ${setting.params} ${file.path}`, (error, stdout, stderr) => {
       //   try {
       //     settings.job = stdout.match(/[a-z]+-\d+/gi)[0].match(/\d+/gi)[0];
@@ -98,7 +102,7 @@ export async function sendPrint(upload, config) {
       //         function (_err, res) {
       //           try {
       //             const job = res['job-attributes-tag'];
-      //             states[job['job-state']](job);
+      //             states[job['job-state']](job, setting);
       //             if (['completed', 'canceled'].includes(job['job-state'])) {
       //               clearInterval(status);
       //             }
@@ -109,11 +113,11 @@ export async function sendPrint(upload, config) {
       //       );
       //     }, 5000);
       //   } catch (e) {
-      //     response.msg = 'SendPrint: ' + e;
+      //     resp.msg = 'SendPrint: ' + e;
       //   }
       // });
     });
   });
 
-  return response;
+  return res.json(resp);
 }

@@ -1,5 +1,5 @@
-import logging from '../lib/logging';
-import formData from '../lib/formdata';
+import logging from '../src/Controllers/Components/logging';
+import formData from '../src/Controllers/Components/formdata';
 
 export default function ({ $axios, redirect }, inject) {
   inject('logging', logging);
