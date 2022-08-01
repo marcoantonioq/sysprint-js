@@ -50,6 +50,6 @@ export const actions = {
     commit('toggle', payload);
   },
   print({ commit, dispatch }, form) {
-    this.$axios.$post('/api/print', form);
+    return this.$axios.$post('/api/print', form);
   },
 };

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { info, warn } from '../Controllers/Components/logging';
 import User from './User';
 import Spool from './Spool';
 
@@ -8,10 +9,10 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('Conectado com sucesso!');
+    info(`Conectado no mongo ${new Date().toLocaleString()}!`);
   })
   .catch((err) => {
-    console.log('Erro ao conectar no mongo: ', err);
+    warn(`Erro ao conectar no mongo ${new Date().toLocaleString()}: `, err);
     return err;
   });
 

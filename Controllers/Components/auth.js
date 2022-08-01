@@ -29,7 +29,7 @@ export function createToke(data, secrete, config) {
   return jwt.sign(data, secrete, config);
 }
 
-export function createUser({ body }, res) {
+export function authentication({ body }, res) {
   const config = { expiresIn: '2h' };
   const { username, email } = body;
   const nick = username || email;

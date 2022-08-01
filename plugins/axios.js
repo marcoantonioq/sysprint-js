@@ -4,8 +4,6 @@ export default ({ $axios, redirect, store }) => {
     if (token) {
       config.headers.common.Authorization = token;
     }
-    // eslint-disable-next-line no-console
-    console.log('Making request to ' + config.url);
   });
 
   $axios.onError((error) => {

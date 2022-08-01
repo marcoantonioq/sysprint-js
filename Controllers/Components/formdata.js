@@ -48,7 +48,6 @@ export function jsonToFormData(data) {
  * @param {String} path Pasta destino (Default: upload/)
  */
 export function upLoadFiles({ files }, res) {
-  console.log(files);
   if (!files) {
     throw new UserException('Sem arquivos!');
   }

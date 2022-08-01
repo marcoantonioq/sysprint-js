@@ -1,25 +1,24 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import * as form from '../src/Controllers/Components/formdata';
-import * as auth from '../src/Controllers/Components/auth';
-import * as printers from '../src/Controllers/printers';
+import * as form from '../Controllers/Components/formdata';
+import * as printers from '../Controllers/printers';
+import * as users from '../Controllers/users';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
-app.post('/login', auth.createUser);
-app.get('/users/user', auth.verifyJWT, auth.getUser);
-app.get('/users/users', auth.verifyJWT, (req, res) => {
-  res.json(auth.users);
-});
-app.post('/logout', auth.verifyJWT, auth.deleteToke);
-app.get('/printers', auth.verifyJWT, printers.getPrinters);
+app.post('/login', users.login);
+app.get('/users/user', users.verify, users.logged);
+app.get('/users/print', users.verify, users.prints);
+app.get('/users/users', users.verify, users.users);
+app.post('/logout', users.verify, users.logout);
+app.get('/printers', users.verify, printers.getPrinters);
 app.post('/print', printers.sendPrint);
 app.get('/jobs/:print/:id', printers.getJob);
-app.post('/upload', auth.verifyJWT, form.upLoadFiles);
+app.post('/upload', users.verify, form.upLoadFiles);
 
-app.get('/date', auth.verifyJWT, (req, res) => {
+app.get('/date', users.verify, (req, res) => {
   res.json({ date: new Date() });
 });
 
