@@ -1,4 +1,4 @@
-import { log } from './logging';
+import { log } from './logging.components';
 
 const { v4: uuidv4 } = require('uuid');
 const ipp = require('@sealsystems/ipp');

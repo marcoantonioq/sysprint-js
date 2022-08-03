@@ -1,5 +1,5 @@
-import logging from '../Controllers/Components/logging';
-import formData from '../Controllers/Components/formdata';
+import logging from '../plugins/logging.components';
+import formData from '../plugins/formdata.components';
 
 export default function ({ $axios, redirect }, inject) {
   // eslint-disable-next-line import/no-named-as-default-member

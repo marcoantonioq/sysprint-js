@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String?
+  username   String   @unique
+  email      String?  @unique
+  thumbnail  String?
+  status     Boolean?
+  rules      String?
+  quota      Decimal?
+  pages      Decimal?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Spool      Spool[]
+
+  @@map("users")
+}
+
+model Print {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  status     String?
+  quota      Decimal?
+  pages      Decimal?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Spool      Spool[]
+
+  @@map("prints")
+}
+
+model Spool {
+  job        Int      @id
+  id_user    Int
+  user       User     @relation(fields: [id_user], references: [id])
+  id_print   Int
+  print      Print    @relation(fields: [id_print], references: [id])
+  copies     Decimal
+  params     String?
+  file       String
+  status     String?
+  media      String?
+  message    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([job, id_user, id_print])
+  @@map("spools")
+}

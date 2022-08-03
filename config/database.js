@@ -3,9 +3,10 @@ module.exports = {
   host: 'localhost',
   username: 'marco',
   password: 'p@ss123',
-  database: 'sqlnode',
+  database: 'sysprint',
   define: {
     timestamps: true,
     underscored: true,
   },
+  logging: true,
 };

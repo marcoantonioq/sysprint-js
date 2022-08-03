@@ -1,12 +1,7 @@
-const Sequelize = require('sequelize');
-const database = require('~/config/database');
+import { PrismaClient } from '@prisma/client';
 
-// const User = require('../models/User');
+const db = new PrismaClient({
+  log: ['error', 'info', 'query', 'warn'],
+});
 
-const connection = new Sequelize(database);
-
-// User.init(connection);
-
-// User.associate(connection.models);
-
-module.exports = connection;
+export { db };
