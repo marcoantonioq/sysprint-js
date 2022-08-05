@@ -24,14 +24,15 @@ export default {
   data() {
     return {
       rowData: [
-        { make: 'Toyota', model: 'Celica', price: 35000 },
-        { make: 'Ford', model: 'Mondeo', price: 32000 },
-        { make: 'Porsche', model: 'Boxter', price: 72000 },
+        { make: 'ADM', user: 'user', model: 'HP', price: 35000 },
+        { make: 'CORDI', user: '1934155', model: 'HP', price: 32000 },
+        { make: 'CERTIFICADOS', user: 'user', model: 'HP', price: 72000 },
       ],
       columnDefs: [
-        { headerName: 'Marca', field: 'make' },
+        { headerName: 'Impressora', field: 'make' },
+        { headerName: 'Usuário', field: 'user' },
         { headerName: 'Modelo', field: 'model' },
-        { headerName: 'Preço', field: 'price' },
+        { headerName: 'Impressões', field: 'price' },
       ],
       defaultColDef: {
         sortable: true,
