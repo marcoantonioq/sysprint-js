@@ -20,7 +20,7 @@
       </template>
     </v-file-input>
 
-    <div v-show="form.files.length > 0 || 1">
+    <div v-show="form.files.length > 0">
       <v-tooltip top>
         <template #activator="{ on, attrs }">
           <div class="d-flex justify-space-around flex-wrap printers">

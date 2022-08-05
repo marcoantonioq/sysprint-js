@@ -9,7 +9,6 @@
       User: {{ _user }}
       Data: {{ data }}
     </pre>
-    <button @click="fetchSomething()">Update</button>
   </div>
 </template>
 

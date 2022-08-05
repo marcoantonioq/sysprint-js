@@ -1,5 +1,5 @@
-import db from '../Models';
-import { log, error } from './logging.components';
+import db from '../../models';
+import { log, error } from '../logging';
 
 export const states = {
   completed: (job, setting) => {

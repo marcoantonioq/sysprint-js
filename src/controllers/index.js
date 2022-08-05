@@ -1,4 +1,4 @@
-import db from '../Models/index';
+import db from '../models/index';
 import * as printers from './printers.controller';
 
 export default {

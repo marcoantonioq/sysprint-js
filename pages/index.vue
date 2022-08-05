@@ -7,10 +7,8 @@
 </template>
 
 <script>
-import Printers from '../components/Printers.vue';
 export default {
   name: 'PageHome',
-  components: { Printers },
   middleware: 'protected',
 };
 </script>

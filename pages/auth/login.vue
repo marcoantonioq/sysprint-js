@@ -37,6 +37,7 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'LoginVue',
+  layout: 'blank',
   middleware: 'protected',
   data: () => ({
     form: {

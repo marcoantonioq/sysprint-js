@@ -1,9 +1,9 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import * as form from '../plugins/formdata.components';
-import * as printers from '../Controllers/printers.controller';
+import * as form from '../src/lib/formdata';
+import * as printers from '../src/controllers/printers.controller';
 // eslint-disable-next-line import/namespace
-import * as users from '../Controllers/users.controller';
+import * as users from '../src/controllers/users.controller';
 
 // eslint-disable-next-line no-console
 const CreateUserController = users.CreateUserController;

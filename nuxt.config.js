@@ -26,10 +26,10 @@ export default {
     },
   ],
   plugins: [
-    { src: '@/plugins/axios.plug' },
-    { src: '@/plugins/dayjs.plug' },
-    { src: '@/plugins/services.plug' },
-    { src: '@/plugins/global.plug' },
+    { src: '@/plugins/axios' },
+    { src: '@/plugins/dayjs' },
+    { src: '@/plugins/services' },
+    { src: '@/plugins/global' },
   ],
 
   components: true,

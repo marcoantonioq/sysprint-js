@@ -80,8 +80,8 @@ a.nuxt-link-active {
 a.nuxt-link-exact-active {
   color: #ffffff;
 }
-a,
-a:visited {
+.v-bottom-navigation a,
+.v-bottom-navigation a:visited {
   text-decoration: none;
   color: inherit;
 }

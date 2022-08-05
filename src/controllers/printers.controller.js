@@ -2,10 +2,10 @@
 import { exec } from 'child_process';
 import axios from 'axios';
 import ipp from '@sealsystems/ipp';
-import { getSettings, getFiles } from '../plugins/options.components';
-import { states } from '../plugins/states.components';
-import { response } from '../plugins/response.components';
-import { log, error } from '../plugins/logging.components';
+import { getSettings, getFiles } from '../components/ipp/ipp';
+import { states } from '../components/ipp/ipp.states';
+import { response } from '../mock/response';
+import { log, error } from '../components/logging';
 
 const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];

@@ -1,5 +1,5 @@
 /* eslint-disable require-await */
-import * as auth from '../plugins/auth.components';
+import * as auth from '../lib/auth';
 // eslint-disable-next-line no-unused-vars
 import { db } from '../database';
 
