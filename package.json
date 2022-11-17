@@ -1,14 +1,13 @@
 {
   "name": "sysprint-js",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "gdb": "npx prisma migrate reset && npx prisma migrate dev --name create_db",
-    "settings": "./src/shell/settings.sh"
+    "settings": "./shell/init.sh"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",

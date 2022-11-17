@@ -1,11 +1,7 @@
 /* eslint-disable no-throw-literal */
-import { exec } from 'child_process';
 import axios from 'axios';
-import ipp from '@sealsystems/ipp';
-import { getSettings, getFiles } from '../components/ipp/ipp';
-import { states } from '../components/ipp/ipp.states';
+import * as ipps from '../components/ipp/ipp';
 import { response } from '../mock/response';
-import { log, error } from '../components/logging';
 
 const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];
@@ -29,68 +25,22 @@ export async function getPrinters(_req, res) {
   return res.json(resp);
 }
 
-export function getJob(req, res) {
+export function job(req, res) {
   const { print, id } = req.params;
-  const printer = ipp.Printer(`http://localhost:631/printers/${print}`);
-  return printer.execute(
-    'Get-Job-Attributes',
-    {
-      'operation-attributes-tag': {
-        'which-jobs': 'completed',
-        'job-id': id,
-        'requested-attributes': [
-          'job-id',
-          'job-media-sheets-completed',
-          'job-state',
-        ],
-      },
+  return ipps.execJob(
+    print,
+    id,
+    (err, result) => {
+      console.log('Return:: ', result, err);
+      return res.json(result || err);
     },
-    function (err, result) {
-      res.json(result || err);
+    (err) => {
+      return res.json(err);
     }
   );
 }
 
-export function sendPrint({ files, body }, res) {
-  const resp = response();
-  const settings = getSettings(body);
-  settings.forEach((setting) => {
-    getFiles(files).forEach((file) => {
-      const command = `lp -t "${file.name}" ${setting.params} ${file.path}`;
-      log(`Command: ${command}`);
-      exec(command, (err, stdout, stderr) => {
-        try {
-          settings.job = stdout.match(/[a-z]+-\d+/gi)[0].match(/\d+/gi)[0];
-          if (err) throw `Erro exec lp: ${err.message}`;
-          if (stderr) throw `Erro stderr lp: ${stderr}`;
-          if (!settings.job) throw `JOB ${stdout} não identificado!`;
-
-          const status = setInterval(function () {
-            setting.printer.execute(
-              'Get-Job-Attributes',
-              { 'operation-attributes-tag': { 'job-id': settings.job } },
-              // eslint-disable-next-line node/handle-callback-err
-              function (_err, res) {
-                try {
-                  const job = res['job-attributes-tag'];
-                  states[job['job-state']](job, setting);
-                  if (['completed', 'canceled'].includes(job['job-state'])) {
-                    exec(`rm ${file.path}`);
-                    clearInterval(status);
-                  }
-                } catch (e) {
-                  error(`Erro ao processar: ${e}`);
-                }
-              }
-            );
-          }, 5000);
-        } catch (e) {
-          resp.msg = 'SendPrint: ' + e;
-          error(resp.msg);
-        }
-      });
-    });
-  });
-
+export function print({ files, body }, res) {
+  const resp = ipps.execPrint(body, files);
   return res.json(resp);
 }

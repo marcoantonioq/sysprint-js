@@ -21,8 +21,8 @@ app.get('/users/print', users.verify, users.prints);
 app.get('/users/users', users.verify, users.users);
 app.post('/logout', users.verify, users.logout);
 app.get('/printers', users.verify, printers.getPrinters);
-app.post('/print', printers.sendPrint);
-app.get('/jobs/:print/:id', printers.getJob);
+app.post('/print', printers.print);
+app.get('/jobs/:print/:id', printers.job);
 app.post('/upload', users.verify, form.upLoadFiles);
 
 app.get('/date', users.verify, (req, res) => {
