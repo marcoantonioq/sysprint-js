@@ -1,14 +1,13 @@
 <template>
   <div>
-    <h1>Welcome to user profile</h1>
-    <pre style="word-break: break-all; white-space: pre-wrap">
-      Token: {{ _token }}
-    </pre>
+    <h1>Perfil</h1>
     <hr />
-    <pre style="word-break: break-all; white-space: pre-wrap">
-      User: {{ _user }}
-      Data: {{ data }}
-    </pre>
+    Usuário: {{ _user.username }}
+    <br />
+    Data: {{ data }}
+    <small style="word-break: break-all; white-space: pre-wrap">
+      Token: {{ _token }}
+    </small>
   </div>
 </template>
 

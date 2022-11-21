@@ -10,7 +10,7 @@
       </div>
       <div>
         <v-bottom-navigation v-model="value" app :background-color="color" dark>
-          <NuxtLink to="/">
+          <NuxtLink to="/printers">
             <v-btn value="Inicial" height="100%" :color="color">
               <span>Inicial</span>
               <v-icon>mdi-home</v-icon>

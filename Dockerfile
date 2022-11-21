@@ -1,9 +1,8 @@
-FROM node:12.18.0
-RUN mkdir -p /app/shell/config
+FROM node:18.12.1
 WORKDIR /app
 
 RUN  apt-get update \
-    && apt-get install -y wget git gnupg ca-certificates \
+    && apt-get install -y wget git openssl gnupg ca-certificates \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
@@ -18,9 +17,11 @@ RUN  apt-get update \
 
 RUN sudo useradd -g lpadmin cupsadmin
 RUN echo 'admin\nadmin' | passwd cupsadmin
-COPY shell/cups/config/cupsd.conf /etc/cups
+COPY ./shell/cupsd.conf /etc/cups
 
-EXPOSE 3010
+ENV HOST 0.0.0.0
+
+EXPOSE 3000
 EXPOSE 80
 EXPOSE 135
 EXPOSE 136

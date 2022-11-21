@@ -8,19 +8,26 @@ services:
     restart: always 
     ports:
       - "80:80"
-      - "632:631"
+      - "631:631"
       - "135:135"
       - "136:136"
       - "137:137"
       - "138:138"
       - "139:139"
       - "445:445"
+      - "3000:3000"
     volumes:
       - ./:/app
-      - ./out/logs:/var/log/cups/
-      - ./shell/cups/config:/etc/cups/
-      - ./shell/cups/spool:/var/spool/cups/
-      - ./shell/cups/data:/usr/share/cups/
-      - ./shell/smb/conf:/etc/samba/
+      - cups-logs:/var/log/cups/
+      - cups-config:/etc/cups/
+      - cups-spool:/var/spool/cups/
+      - cups-data:/usr/share/cups/
+      - smb-conf:/etc/samba/
     stdin_open: true
     tty: true
+volumes:
+  cups-logs: 
+  cups-config:
+  cups-spool:
+  cups-data:
+  smb-conf:

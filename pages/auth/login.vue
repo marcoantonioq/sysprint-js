@@ -1,10 +1,10 @@
 <template>
   <div class="login">
     <div class="login__container">
-      <h1>Simple login form</h1>
+      <h1>Login</h1>
       <form class="form" @submit.prevent="onSubmit()">
         <div class="form__input">
-          <label for="email">Email</label>
+          <label for="email">E-mail ou matrícula</label>
           <input
             id="email"
             v-model="form.email"
@@ -22,13 +22,9 @@
           />
         </div>
         <button type="submit" :disabled="loading">
-          {{ loading ? 'Loading...' : 'Login' }}
+          {{ loading ? 'Carregando...' : 'Login' }}
         </button>
       </form>
-      <div style="text-align: left; margin-top: 10px">
-        <div>Demo email: admin@gmail.com</div>
-        <div>Demo password: 12345678</div>
-      </div>
     </div>
   </div>
 </template>
@@ -77,12 +73,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
   height: 100vh;
+  margin: 0;
   text-align: center;
   color: #000000;
   &__container {
-    background-color: #52c7ac;
+    background-color: #00540f;
     border: 1px solid #2b5d51;
     color: #ffffff;
     padding: 40px 20px;

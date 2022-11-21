@@ -1,4 +1,5 @@
 #iniciando cups e smb
+
 /usr/sbin/cupsd
 /usr/sbin/smbd
 /usr/sbin/nmbd
@@ -11,7 +12,8 @@ lpadmin -p cups-pdf -v cups-pdf:/ -E -P /usr/share/ppd/cups-pdf/CUPS-PDF.ppd
 git pull --ff-only
 
 # Atualiza app
-npm update
+npm install
 
 # Start
-npm start
+npm run build
+npm run start

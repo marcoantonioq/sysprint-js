@@ -1,12 +1,8 @@
 <template>
   <v-app>
-    <section>
-      <v-main>
-        <v-container>
-          <Nuxt />
-        </v-container>
-      </v-main>
-    </section>
+    <v-container>
+      <Nuxt />
+    </v-container>
   </v-app>
 </template>
 

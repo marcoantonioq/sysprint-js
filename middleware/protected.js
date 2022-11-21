@@ -5,6 +5,6 @@ export default ({ route, store, redirect }) => {
   if (!user && !includesLogin) {
     return redirect({ path: loginPath, query: { from: route.fullPath } });
   } else if (user && includesLogin) {
-    return redirect('/profile');
+    return redirect('/printers');
   }
 };

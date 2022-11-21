@@ -1,7 +1,7 @@
 <template>
   <v-row>
-    <Charts />
-    <ag-grid-vue
+    <!-- <Charts /> -->
+    <!-- <ag-grid-vue
       id="myGrid"
       style="width: 100%; height: 700px"
       class="ag-theme-balham"
@@ -9,17 +9,17 @@
       :default-col-def="defaultColDef"
       :row-data="rowData"
     >
-    </ag-grid-vue>
+    </ag-grid-vue> -->
   </v-row>
 </template>
 
 <script>
-import { AgGridVue } from 'ag-grid-vue';
+// import { AgGridVue } from 'ag-grid-vue';
 export default {
   name: 'ReportsPage',
-  components: {
-    AgGridVue,
-  },
+  // components: {
+  //   AgGridVue,
+  // },
   middleware: 'protected',
   data() {
     return {

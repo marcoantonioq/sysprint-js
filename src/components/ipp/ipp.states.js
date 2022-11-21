@@ -1,24 +1,19 @@
-import db from '../../models';
-import { log, error } from '../logging';
+// import db from '../../models';
+import { log } from '../logging';
 
 export const states = {
-  completed: (job, setting) => {
-    log('Print: ' + JSON.stringify(job));
-    new db.Spool({
+  completed: (job) => {
+    return {
       job: job['job-id'],
-      username: setting.user,
-      printer: setting.print,
-      copies: job.copies, // job-media-sheets-completed
-      params: setting.params,
+      username: '',
+      printer: '',
+      copies: job.copies,
+      params: '',
       file: job['document-name-supplied'],
       status: job['job-state'],
       media: job.media,
       message: job['job-printer-state-message'],
-    })
-      .save()
-      .catch((err) => {
-        error('Erro save: ', err);
-      });
+    };
   },
   canceled(job) {
     log('Cancelado: ' + JSON.stringify(job));

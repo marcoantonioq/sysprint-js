@@ -1,3 +1,4 @@
+
 <template>
   <v-form
     ref="form"
@@ -106,7 +107,7 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: 'ComponentePrinters',
+  name: 'PrintersIndex',
   data: () => ({
     form: {
       user: 'user',
@@ -160,14 +161,18 @@ export default {
           form.orientation = form.orientation === 'Paisagem' ? '4' : '3';
         form = this.$formData.jsonToFormData(form);
         this.$store.dispatch('print', form).then((res) => {
-          if (res.status === 1) {
-            this.form.files = [];
-          }
           this.sending = false;
         });
-      } else {
-        // eslint-disable-next-line no-console
-        this.$logging.log('Impresso!!!');
+        this.form = {
+          user: 'user',
+          files: [],
+          copies: 1,
+          pages: '',
+          double_sided: '',
+          page_set: '',
+          media: 'A4',
+          orientation: '',
+        };
       }
     },
   },

@@ -89,7 +89,7 @@ export async function execPrint(config, files, callback) {
               function (_err, res) {
                 try {
                   const job = res['job-attributes-tag'];
-                  states[job['job-state']](job, setting);
+                  states[job['job-state']](job);
                   if (['completed', 'canceled'].includes(job['job-state'])) {
                     exec(`rm ${file.path}`);
                     clearInterval(status);
