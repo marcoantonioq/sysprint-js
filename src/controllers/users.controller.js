@@ -1,25 +1,13 @@
 /* eslint-disable require-await */
 import * as auth from '../lib/auth';
 // eslint-disable-next-line no-unused-vars
-// import { db } from '../database';
+import db from '../../prisma/db';
 
 export class CreateUserController {
   async handle(request, response) {
-    const { name, username } = request.body;
     try {
-      // const user = await db.user.create({
-      //   data: {
-      //     name,
-      //     username,
-      //     email: '',
-      //     thumbnail: '',
-      //     status: false,
-      //     rules: '',
-      //     quota: 0,
-      //     pages: 0,
-      //   },
-      // });
-      // return response.json(user);
+      const user = await db.users.create(request.body);
+      return response.json(user);
     } catch (e) {
       console.log('Erro:', e);
       return response.json({ status: 'error' + e });
