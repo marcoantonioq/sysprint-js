@@ -5,6 +5,8 @@ import * as printers from '../src/controllers/printers.controller';
 // eslint-disable-next-line import/namespace
 import * as users from '../src/controllers/users.controller';
 
+import '../prisma/db';
+
 // eslint-disable-next-line no-console
 const CreateUserController = users.CreateUserController;
 

@@ -92,3 +92,5 @@ sw.*
 *.swp
 
 package-lock.json
+*.sqlite
+*.sqlite-journal

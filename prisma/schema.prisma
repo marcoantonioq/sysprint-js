@@ -1,60 +1,74 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int      @id @default(autoincrement())
-  name       String?
-  username   String   @unique
-  email      String?  @unique
-  thumbnail  String?
-  status     Boolean?
-  rules      String?
-  quota      Decimal?
-  pages      Decimal?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  Spool      Spool[]
-
-  @@map("users")
+model Users {
+  id             Int      @id @default(autoincrement())
+  name           String
+  username       String
+  password       String
+  email          String   @unique
+  role           String
+  adress         String
+  status         Boolean  @default(true)
+  quota          Int
+  month_count    Int
+  thumbnailphoto String
+  job_count      Int
+  modified       DateTime @updatedAt
+  created        DateTime @default(now())
+  spool          Jobs[]
 }
 
-model Print {
-  id         Int      @id @default(autoincrement())
-  name       String   @unique
-  status     String?
-  quota      Decimal?
-  pages      Decimal?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  Spool      Spool[]
-
-  @@map("prints")
+model Printers {
+  id           Int      @id @default(autoincrement())
+  allow        Boolean  @default(true)
+  name         String
+  status       Boolean  @default(true)
+  month_count  Int      @default(0)
+  quota_period Int      @default(0)
+  page_limite  Int      @default(0)
+  k_limit      Int      @default(0)
+  modified     DateTime @updatedAt
+  created      DateTime @default(now())
+  spool        Jobs[]
 }
 
-model Spool {
-  job        Int      @id
-  id_user    Int
-  user       User     @relation(fields: [id_user], references: [id])
-  id_print   Int
-  print      Print    @relation(fields: [id_print], references: [id])
-  copies     Decimal
-  params     String?
-  file       String
-  status     String?
-  media      String?
-  message    String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Jobs {
+  id          Int      @id
+  userId      Int
+  printersId  Int
+  pages       Int
+  copies      Int
+  host        String
+  file        String
+  params      String
+  status      String
+  description String
+  modified    DateTime @updatedAt
+  created     DateTime @default(now())
+  user        Users    @relation(fields: [userId], references: [id])
+  Printers    Printers @relation(fields: [printersId], references: [id])
+}
 
-  @@unique([job, id_user, id_print])
-  @@map("spools")
+model Settings {
+  group  String
+  key    String
+  value  String
+  enable Boolean @default(true)
+
+  @@id([group, key], name: "setting")
+}
+
+model Loggers {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  level       Int
+  created     DateTime @default(now())
 }
