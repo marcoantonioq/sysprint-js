@@ -17,7 +17,7 @@
             </v-btn>
           </NuxtLink>
 
-          <NuxtLink to="/reports">
+          <!-- <NuxtLink to="/reports">
             <v-btn value="Relatórios" height="100%" :color="color">
               <span>Relatórios</span>
               <v-icon>mdi-chart-bar</v-icon>
@@ -29,7 +29,7 @@
               <span>Perfil</span>
               <v-icon>mdi-account</v-icon>
             </v-btn>
-          </NuxtLink>
+          </NuxtLink> -->
         </v-bottom-navigation>
       </div>
     </section>
