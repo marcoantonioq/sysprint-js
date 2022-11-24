@@ -56,6 +56,11 @@ body,
 html {
   height: 100vh;
   overflow: hidden;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 /* Grid */
 .grid {
@@ -88,5 +93,21 @@ a.nuxt-link-exact-active {
 
 a:hover {
   color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+  body {
+    font-size: 1.2em;
+  }
+}
+@media (max-width: 768px) {
+  body {
+    font-size: 1.1em;
+  }
+}
+@media (max-width: 468px) {
+  body {
+    font-size: 0.9em;
+  }
 }
 </style>

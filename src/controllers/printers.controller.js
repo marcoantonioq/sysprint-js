@@ -1,24 +1,22 @@
 /* eslint-disable no-throw-literal */
-import axios from 'axios';
 import * as ipps from '../components/ipp/ipp';
 import { response } from '../mock/response';
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
-const CUPS_URL = process.env.CUPS_URL || 'http://localhost:631';
 export const SPOOL = [];
 
 export async function getPrinters(_req, res) {
   const resp = response();
-  const result = await axios.get(`${CUPS_URL}/printers`);
-  resp.data = result.data
-    .match(/<TR><TD><A HREF="\/printers\/([a-zA-Z0-9-^"]+)">/gm)
-    .map((printer) => {
-      return /"\/printers\/([a-zA-Z0-9-^"]+)"/.exec(printer);
-    })
+  const { stdout } = await exec('/bin/lpstat -e -l');
+  resp.data = stdout
+    .trim()
+    .split('\n')
     .map((printer) => {
       return {
         icon: '/img/print.png',
-        name: printer[1],
-        path: printer[0],
+        name: printer,
+        path: printer,
         selected: false,
       };
     });

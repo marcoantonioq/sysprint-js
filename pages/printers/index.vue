@@ -21,84 +21,80 @@
       </template>
     </v-file-input>
 
-    <div v-show="form.files.length > 0">
-      <v-tooltip top>
-        <template #activator="{ on, attrs }">
-          <div class="d-flex justify-space-around flex-wrap printers">
-            <a
-              v-for="(el, i) in printers"
-              :key="i"
-              class="d-flex flex-column align-content-center text-center"
-              v-bind="attrs"
-              @click="toggle(el)"
-              v-on="on"
-            >
-              <div>
-                <img :src="el.icon" alt="" /><br />
-                <v-icon v-if="el.selected" class="check" color="green darken-2">
-                  mdi-check-bold
-                </v-icon>
-                <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
-              </div>
-            </a>
-          </div>
+    <v-tooltip top>
+      <template #activator="{ on, attrs }">
+        <div class="d-flex justify-space-around flex-wrap printers">
+          <a
+            v-for="(el, i) in printers"
+            :key="i"
+            class="d-flex flex-column align-content-center text-center"
+            v-bind="attrs"
+            @click="toggle(el)"
+            v-on="on"
+          >
+            <div>
+              <img :src="el.icon" alt="" />
+              <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
+            </div>
+            <v-icon v-if="el.selected" class="check" color="green darken-2">
+              mdi-check-bold
+            </v-icon>
+          </a>
+        </div>
+      </template>
+      <span>Selecionar impressora</span>
+    </v-tooltip>
+
+    <div class="d-flex justify-center flex-wrap">
+      <v-btn
+        class="mr-5"
+        :loading="sending"
+        :disabled="sending || countPrinterSelected < 1"
+        color="success"
+        @click="sending = true"
+      >
+        Imprimir
+        <template #loader>
+          <span>Enviando...</span>
         </template>
-        <span>Selecionar impressora</span>
-      </v-tooltip>
-
-      <div class="d-flex justify-center flex-wrap">
-        <v-btn
-          class="mr-5"
-          :loading="sending"
-          :disabled="sending || countPrinterSelected < 1"
-          color="success"
-          @click="sending = true"
-        >
-          Imprimir
-          <template #loader>
-            <span>Enviando...</span>
-          </template>
-        </v-btn>
-
-        <v-btn elevation="1" @click="details = !details">Configurações</v-btn>
-      </div>
-      <div v-show="details">
-        <v-text-field
-          v-model="form.copies"
-          type="number"
-          label="Cópias"
-          prepend-icon="mdi-content-copy"
-        />
-        <v-text-field
-          v-model="form.pages"
-          label="Páginas (ex: 1-5 ou 2,4)"
-          prepend-icon="mdi-arrange-bring-forward"
-        />
-        <v-select
-          v-model="form.double_sided"
-          :items="list.double_sided"
-          label="Frente/Verso"
-          prepend-icon="mdi-format-page-split"
-        ></v-select>
-        <v-select
-          v-model="form.page_set"
-          :items="list.page_set"
-          label="Folhas"
-          prepend-icon="mdi-book-open-page-variant"
-        ></v-select>
-        <v-select
-          v-model="form.media"
-          :items="list.media"
-          label="Papel"
-          prepend-icon="mdi-resize"
-        ></v-select>
-        <v-select
-          v-model="form.orientation"
-          :items="list.orientation"
-          label="Orientação"
-          prepend-icon="mdi-flip-vertical"
-        ></v-select>
-      </div>
+      </v-btn>
+    </div>
+    <div v-show="countPrinterSelected > 0">
+      <v-text-field
+        v-model="form.copies"
+        type="number"
+        label="Cópias"
+        prepend-icon="mdi-content-copy"
+      />
+      <v-text-field
+        v-model="form.pages"
+        label="Páginas (ex: 1-5 ou 2,4)"
+        prepend-icon="mdi-arrange-bring-forward"
+      />
+      <v-select
+        v-model="form.double_sided"
+        :items="list.double_sided"
+        label="Frente/Verso"
+        prepend-icon="mdi-format-page-split"
+      ></v-select>
+      <v-select
+        v-model="form.page_set"
+        :items="list.page_set"
+        label="Folhas"
+        prepend-icon="mdi-book-open-page-variant"
+      ></v-select>
+      <v-select
+        v-model="form.media"
+        :items="list.media"
+        label="Papel"
+        prepend-icon="mdi-resize"
+      ></v-select>
+      <v-select
+        v-model="form.orientation"
+        :items="list.orientation"
+        label="Orientação"
+        prepend-icon="mdi-flip-vertical"
+      ></v-select>
     </div>
   </v-form>
 </template>
@@ -108,6 +104,7 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'PrintersIndex',
+  middleware: 'protected',
   data: () => ({
     form: {
       user: 'user',
@@ -130,7 +127,6 @@ export default {
       orientation: ['', 'Retrato', 'Paisagem'],
     },
     sending: false,
-    details: false,
   }),
   computed: {
     ...mapGetters(['printers']),
@@ -142,7 +138,6 @@ export default {
     },
   },
   watch: {
-    details() {},
     sending() {
       if (this.sending) {
         let form = {
@@ -212,11 +207,10 @@ img {
       font-size: 60px;
     }
     .check {
-      position: absolute;
-      top: 125px;
+      top: -121px;
+      right: -45px;
     }
     .subtitle {
-      position: relative;
       top: -15px;
     }
   }
