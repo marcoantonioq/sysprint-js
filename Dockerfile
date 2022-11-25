@@ -2,14 +2,7 @@ FROM node:18.12.1
 WORKDIR /app
 
 RUN  apt-get update \
-    && apt-get install -y wget git openssl gnupg ca-certificates \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
-    && chmod +x /usr/sbin/wait-for-it.sh \
-    && apt-get install -y zlib1g-dev libmcrypt-dev libicu-dev g++ cups vim net-tools smbclient \
+    && apt-get install -y wget git openssl gnupg ca-certificates zlib1g-dev libmcrypt-dev libicu-dev g++ cups vim net-tools smbclient \
     samba samba-common-bin libldb-dev libldap-dev sudo printer-driver-cups-pdf cups-filters foomatic-db-compressed-ppds printer-driver-all \
     openprinting-ppds hpijs-ppds hpijs-ppds hp-ppd hplip \
     && apt-get clean && sudo apt-get autoremove \
