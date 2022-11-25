@@ -15,7 +15,7 @@ export async function getPrinters(_req, res) {
     .map((printer) => {
       return {
         icon: '/img/print.png',
-        name: printer,
+        name: printer.replace(/(-|_)/gi, ' '),
         path: printer,
         selected: false,
       };

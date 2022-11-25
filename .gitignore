@@ -94,3 +94,4 @@ sw.*
 package-lock.json
 *.sqlite
 *.sqlite-journal
+*.lock.toml

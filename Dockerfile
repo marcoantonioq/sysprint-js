@@ -4,7 +4,7 @@ WORKDIR /app
 RUN  apt-get update \
     && apt-get install -y wget git openssl gnupg ca-certificates zlib1g-dev libmcrypt-dev libicu-dev g++ cups vim net-tools smbclient \
     samba samba-common-bin libldb-dev libldap-dev sudo printer-driver-cups-pdf cups-filters foomatic-db-compressed-ppds printer-driver-all \
-    openprinting-ppds hpijs-ppds hpijs-ppds hp-ppd hplip \
+    openprinting-ppds hpijs-ppds hpijs-ppds hp-ppd hplip printer-driver-gutenprint printer-driver-escpr  openprinting-ppds \
     && apt-get clean && sudo apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
 

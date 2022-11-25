@@ -1,4 +1,5 @@
 export default ({ route, store, redirect }) => {
+  // const isLogin = false;
   const loginPath = '/auth/login';
   const { user } = store.state.auth;
   const includesLogin = route.path.includes(loginPath);

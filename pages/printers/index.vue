@@ -32,13 +32,13 @@
             @click="toggle(el)"
             v-on="on"
           >
-            <div>
-              <img :src="el.icon" alt="" />
-              <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
+            <div class="icon">
+              <img :src="el.icon" alt="" /><br />
+              <v-icon v-if="el.selected" class="check" color="green darken-2">
+                mdi-check-bold
+              </v-icon>
             </div>
-            <v-icon v-if="el.selected" class="check" color="green darken-2">
-              mdi-check-bold
-            </v-icon>
+            <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
           </a>
         </div>
       </template>
@@ -49,7 +49,7 @@
       <v-btn
         class="mr-5"
         :loading="sending"
-        :disabled="sending || countPrinterSelected < 1"
+        :disabled="sending || countPrinterSelected < 1 || form.files.length < 1"
         color="success"
         @click="sending = true"
       >
@@ -138,6 +138,10 @@ export default {
     },
   },
   watch: {
+    'form.files'(val, old) {
+      // eslint-disable-next-line no-console
+      console.log(`New Val: ${JSON.stringify(val.length)}`);
+    },
     sending() {
       if (this.sending) {
         let form = {
@@ -203,15 +207,21 @@ img {
     padding: 10px;
     color: #000;
 
+    .icon {
+      position: relative;
+    }
+
     .v-icon {
       font-size: 60px;
     }
     .check {
-      top: -121px;
-      right: -45px;
+      position: absolute;
+      top: 0px;
+      right: 18px;
     }
     .subtitle {
       top: -15px;
+      max-width: 150px;
     }
   }
 }
