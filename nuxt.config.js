@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors';
-import localSettings from 'local.config.js';
 
 export default {
+  dev: process.env.NODE_ENV !== 'production',
   head: {
     titleTemplate: '%s - sysprint-js',
     title: 'sysprint-js',
@@ -19,6 +19,9 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+  },
+  server: {
+    port: process.env.PORT || 80,
   },
   serverMiddleware: [
     {
@@ -64,5 +67,4 @@ export default {
       };
     },
   },
-  ...localSettings,
 };

@@ -95,4 +95,3 @@ package-lock.json
 *.sqlite
 *.sqlite-journal
 *.lock.toml
-local.config.js
