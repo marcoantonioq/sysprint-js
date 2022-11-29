@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors';
+import localSettings from 'local.config.js';
 
 export default {
   head: {
@@ -18,9 +19,6 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-  },
-  server: {
-    port: 80,
   },
   serverMiddleware: [
     {
@@ -66,4 +64,5 @@ export default {
       };
     },
   },
+  ...localSettings,
 };
