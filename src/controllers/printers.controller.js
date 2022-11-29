@@ -8,7 +8,7 @@ export const SPOOL = [];
 
 export async function getPrinters(_req, res) {
   const resp = response();
-  const { stdout } = await exec('/bin/lpstat -e -l');
+  const { stdout } = await exec('lpstat -e -l');
   resp.data = stdout
     .trim()
     .split('\n')
