@@ -14,7 +14,7 @@ LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse @{u})
 
 if [ $LOCAL = $REMOTE ]; then
-    echo "Atualizado!"
+    echo "Aplicação atualizada!"
 else
     echo "Atualizando instalação:"
     git stash
@@ -26,4 +26,4 @@ else
 fi
 
 # Start
-npm run start
+npm run start || npm run build
