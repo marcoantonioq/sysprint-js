@@ -69,5 +69,6 @@ export default {
   },
   axios: {
     proxy: true,
+    retry: { retries: 3 },
   },
 };
