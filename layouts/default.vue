@@ -97,12 +97,7 @@ a:hover {
 
 @media (max-width: 1200px) {
   body {
-    font-size: 1.2em;
-  }
-}
-@media (max-width: 768px) {
-  body {
-    font-size: 1.1em;
+    font-size: 1em;
   }
 }
 @media (max-width: 468px) {

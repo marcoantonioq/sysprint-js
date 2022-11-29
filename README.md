@@ -6,7 +6,14 @@
 # install dependencies
 $ chmod +x shell/init.sh
 
-# serve with hot reload at 127.0.0.1:3000
-$ docker-compose up --build
+# serve with hot reload at http://ip_servidor
+$ docker-compose start
 
 ```
+
+## Use
+http//:ip_servidor
+
+
+## Add / Manager print
+http//:ip_servidor:631

@@ -27,17 +27,13 @@
           <a
             v-for="(el, i) in printers"
             :key="i"
+            :class="{ selected: !el.selected }"
             class="d-flex flex-column align-content-center text-center"
             v-bind="attrs"
             @click="toggle(el)"
             v-on="on"
           >
-            <div class="icon">
-              <img :src="el.icon" alt="" /><br />
-              <v-icon v-if="el.selected" class="check" color="green darken-2">
-                mdi-check-bold
-              </v-icon>
-            </div>
+            <v-icon color="darken-2">mdi-printer</v-icon>
             <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
           </a>
         </div>
@@ -193,10 +189,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-img {
-  width: 90px;
-}
-
 .file {
   padding: 1.5rem;
 }
@@ -207,21 +199,21 @@ img {
     padding: 10px;
     color: #000;
 
-    .icon {
-      position: relative;
-    }
-
     .v-icon {
-      font-size: 60px;
-    }
-    .check {
-      position: absolute;
-      top: 0px;
-      right: 18px;
+      font-size: 70px;
+      color: green;
     }
     .subtitle {
       top: -15px;
       max-width: 150px;
+    }
+  }
+
+  a.selected {
+    filter: opacity(40%);
+    .v-icon {
+      font-size: 70px;
+      color: #000;
     }
   }
 }

@@ -17,6 +17,8 @@ export const options = {
 };
 
 export function getSettings(config) {
+  console.log(config);
+
   return config.printers.split(',').map((print) => {
     return {
       print,
