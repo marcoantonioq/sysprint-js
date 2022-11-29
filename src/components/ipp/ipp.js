@@ -21,7 +21,7 @@ export function getSettings(config) {
     return {
       print,
       ...config,
-      printer: ipp.Printer(`http://localhost:631/printers/${print.print}`),
+      printer: ipp.Printer(`http://127.0.0.1:631/printers/${print.print}`),
       params:
         `-d ${print} ` +
         Object.entries(config)
@@ -41,7 +41,7 @@ export function getSettings(config) {
  */
 // eslint-disable-next-line require-await
 export function execJob(print, id, callback, error) {
-  const printer = ipp.Printer(`http://localhost:631/printers/${print}`);
+  const printer = ipp.Printer(`http://127.0.0.1:631/printers/${print}`);
   if (!id || !print) {
     // eslint-disable-next-line no-throw-literal
     return error({ msg: `Erro exec job: ${print}, ${id}` });

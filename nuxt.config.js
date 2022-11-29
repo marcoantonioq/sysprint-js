@@ -67,4 +67,7 @@ export default {
       };
     },
   },
+  axios: {
+    proxy: true,
+  },
 };

@@ -15,7 +15,6 @@ services:
       - "138:138"
       - "139:139"
       - "445:445"
-      # - "3000:3000"
     volumes:
       - ./:/app
       - cups-logs:/var/log/cups/
