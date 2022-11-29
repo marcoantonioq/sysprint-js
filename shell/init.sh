@@ -14,9 +14,9 @@ LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse @{u})
 
 if [ $LOCAL = $REMOTE ]; then
-    echo "Up-to-date"
+    echo "Atualizado!"
 else
-    echo "Diverged"
+    echo "Atualizando instalação:"
     git stash
     git pull --ff-only
     # Atualiza app
