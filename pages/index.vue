@@ -8,6 +8,9 @@
 export default {
   name: 'PageHome',
   middleware: 'protected',
+  created() {
+    this.$router.push('/printers');
+  },
 };
 </script>
 

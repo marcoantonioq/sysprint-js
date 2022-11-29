@@ -13,7 +13,8 @@ const CreateUserController = users.CreateUserController;
 const createUser = new CreateUserController();
 
 const auth = function (req, res, next) {
-  return users.verify(req, res, next);
+  next(); // disable auth
+  // return users.verify(req, res, next);
 };
 
 const app = express();
