@@ -20,6 +20,7 @@ while true; do
         echo "Atualizando instalação:"
         git stash
         git pull --ff-only
+        chmod +x $0
         # Atualiza app
         npm install
         # Build

@@ -13,6 +13,7 @@
       label="Arquivo (PDF)"
       multiple
       prepend-icon="mdi-paperclip"
+      @change="onFileChange"
     >
       <template #selection="{ text }">
         <v-chip small label color="primary">
@@ -134,10 +135,6 @@ export default {
     },
   },
   watch: {
-    'form.files'(val, old) {
-      // eslint-disable-next-line no-console
-      console.log(`New Val: ${JSON.stringify(val.length)}`);
-    },
     sending() {
       if (this.sending) {
         let form = {
@@ -147,13 +144,15 @@ export default {
             ?.map((el) => el.name)
             ?.join(','),
         };
-        if (form.double_sided)
+        if (form.double_sided) {
           form.double_sided =
             form.double_sided === 'Sim - Virar na borda(paisagem)'
               ? 'two-sided-short-edge'
               : 'two-sided-long-edge';
-        if (form.orientation)
+        }
+        if (form.orientation) {
           form.orientation = form.orientation === 'Paisagem' ? '4' : '3';
+        }
         form = this.$formData.jsonToFormData(form);
         this.$store.dispatch('print', form).then((res) => {
           this.sending = false;
@@ -178,7 +177,7 @@ export default {
     ...mapActions(['update', 'remove', 'toggle']),
     onFileChange(files) {
       this.form.files = files.filter((file) =>
-        this.$store.state.FILES_FORMATS.includes(file.type)
+        ['application/pdf', 'text/plain'].includes(file.type)
       );
     },
     async reloadPrinters() {

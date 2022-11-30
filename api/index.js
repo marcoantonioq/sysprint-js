@@ -28,8 +28,8 @@ app.get('/users/print', auth, users.prints);
 app.get('/users/users', auth, users.users);
 app.post('/logout', auth, users.logout);
 app.get('/printers', auth, printers.getPrinters);
-app.post('/print', printers.print);
-app.get('/jobs/:print/:id', printers.job);
+app.post('/print', auth, printers.print);
+app.get('/jobs/:print/:id', auth, printers.job);
 app.post('/upload', auth, form.upLoadFiles);
 
 app.get('/date', auth, (req, res) => {
