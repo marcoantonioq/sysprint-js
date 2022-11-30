@@ -8,8 +8,8 @@ export const getters = {};
 export const mutations = {
   SET_TOKEN(state, token) {
     state.token = token;
-    this.$cookies.set("token", state.token, {
-      path: "/",
+    this.$cookies.set('token', state.token, {
+      path: '/',
       maxAge: 60 * 2,
     });
   },
@@ -19,8 +19,23 @@ export const mutations = {
   LOGOUT(state) {
     state.token = null;
     state.user = null;
-    this.$cookies.remove("token");
+    this.$cookies.remove('token');
   },
 };
 
-export const actions = {};
+export const actions = {
+  async nuxtServerInit(store) {
+    const token = this.$cookies.get('token');
+    if (token) {
+      try {
+        const { data } = await this.$axios.$get('/api/users/user');
+        await store.commit('auth/SET_TOKEN', token);
+        await store.commit('auth/SET_USER', data.user);
+      } catch (e) {
+        await store.commit('auth/LOGOUT');
+      }
+    } else {
+      await store.commit('auth/LOGOUT');
+    }
+  },
+};

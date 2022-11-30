@@ -31,7 +31,7 @@
             :class="{ selected: !el.selected }"
             class="d-flex flex-column align-content-center text-center"
             v-bind="attrs"
-            @click="toggle(el)"
+            @click="togglePrinters(el)"
             v-on="on"
           >
             <v-icon color="darken-2">mdi-printer</v-icon>
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'PrintersIndex',
@@ -174,14 +174,15 @@ export default {
     this.reloadPrinters();
   },
   methods: {
-    ...mapActions(['update', 'remove', 'toggle']),
+    ...mapMutations(['remove', 'togglePrinters']),
+    ...mapActions(['findPrint']),
     onFileChange(files) {
       this.form.files = files.filter((file) =>
         ['application/pdf', 'text/plain'].includes(file.type)
       );
     },
     async reloadPrinters() {
-      await this.$store.dispatch('update');
+      await this.findPrint();
     },
   },
 };
