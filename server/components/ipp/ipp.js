@@ -1,8 +1,8 @@
 import { exec } from 'child_process';
 import ipp from '@sealsystems/ipp';
-import { log, error } from '../logging';
+import { log, error } from '../../../libs/logging';
 import { response } from '../../mock/response';
-import { states } from './ipp.states';
+// import { states } from './ipp.states';
 const { v4: uuidv4 } = require('uuid');
 
 export const options = {
@@ -21,6 +21,7 @@ export function getSettings(config) {
 
   return config.printers.split(',').map((print) => {
     return {
+      // <<erro: impressora com espaço!>>
       print,
       ...config,
       printer: ipp.Printer(`http://127.0.0.1:631/printers/${print.print}`),
@@ -66,7 +67,7 @@ export function execJob(print, id, callback, error) {
 }
 
 // eslint-disable-next-line require-await
-export async function execPrint(config, files, callback) {
+export async function execPrint(config, files) {
   const resp = response();
   const settings = getSettings(config);
   settings.forEach((setting) => {
@@ -83,25 +84,25 @@ export async function execPrint(config, files, callback) {
           // eslint-disable-next-line no-throw-literal
           if (!settings.job) throw `JOB ${stdout} não identificado!`;
 
-          const status = setInterval(function () {
-            setting.printer.execute(
-              'Get-Job-Attributes',
-              { 'operation-attributes-tag': { 'job-id': settings.job } },
-              // eslint-disable-next-line node/handle-callback-err
-              function (_err, res) {
-                try {
-                  const job = res['job-attributes-tag'];
-                  states[job['job-state']](job);
-                  if (['completed', 'canceled'].includes(job['job-state'])) {
-                    exec(`rm ${file.path}`);
-                    clearInterval(status);
-                  }
-                } catch (e) {
-                  error(`Erro ao processar: ${e}`);
-                }
-              }
-            );
-          }, 5000);
+          // const status = setInterval(function () {
+          //   setting.printer.execute(
+          //     'Get-Job-Attributes',
+          //     { 'operation-attributes-tag': { 'job-id': settings.job } },
+          //     // eslint-disable-next-line node/handle-callback-err
+          //     function (_err, res) {
+          //       try {
+          //         const job = res['job-attributes-tag'];
+          //         states[job['job-state']](job);
+          //         if (['completed', 'canceled'].includes(job['job-state'])) {
+          //           exec(`rm ${file.path}`);
+          //           clearInterval(status);
+          //         }
+          //       } catch (e) {
+          //         error(`Erro ao processar: ${e}`);
+          //       }
+          //     }
+          //   );
+          // }, 5000);
         } catch (e) {
           resp.msg = 'SendPrint: ' + e;
           error(resp.msg);
@@ -109,6 +110,7 @@ export async function execPrint(config, files, callback) {
       });
     });
   });
+  return resp;
 }
 
 export function getFiles(upload) {

@@ -1,5 +1,5 @@
 // import db from '../../models';
-import { log } from '../logging';
+import { log } from '../../../libs/logging';
 
 export const states = {
   completed: (job) => {

@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors';
 
 export default {
+  srcDir: 'client/',
   dev: process.env.NODE_ENV !== 'production',
   head: {
     titleTemplate: '%s - sysprint-js',
@@ -26,7 +27,7 @@ export default {
   serverMiddleware: [
     {
       path: '/api',
-      handler: '~/api/index.js',
+      handler: '../server/index.js',
     },
   ],
   plugins: [

@@ -1,3 +1,5 @@
+// import MicroEmitter from 'micro-emitter';
+
 export function response(response) {
   return {
     ...{

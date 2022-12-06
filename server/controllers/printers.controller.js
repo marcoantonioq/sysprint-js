@@ -38,7 +38,8 @@ export function job(req, res) {
   );
 }
 
-export function print({ files, body }, res) {
-  const resp = ipps.execPrint(body, files);
+export async function print({ files, body }, res) {
+  const resp = await ipps.execPrint(body, files);
+  console.log('Response print: ', resp);
   return res.json(resp);
 }

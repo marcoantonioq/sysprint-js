@@ -1,4 +1,5 @@
 #iniciando cups e smb
+export NODE_OPTIONS=--openssl-legacy-provider
 
 /usr/sbin/cupsd
 /usr/sbin/smbd
@@ -24,6 +25,7 @@ while true; do
         # Atualiza app
         npm install
         # Build
+        npm run gdb
         npm run build
     fi
 

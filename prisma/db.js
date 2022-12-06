@@ -8,13 +8,27 @@ const db = new PrismaClient({
 async function init() {
   // eslint-disable-next-line no-console
   console.log(`Aplicação inicializada ${new Date().toISOString()}`);
-  // await db.loggers.create({
-  //   data: {
-  //     title: 'Info',
-  //     description: `Aplicação inicializada!`,
-  //     level: 0,
-  //   },
-  // });
+  // create user default
+  try {
+    await db.user.create({
+      data: {
+        id: 1,
+        name: 'User',
+        username: 'user',
+        password: 'password',
+        groups: 'user',
+      },
+    });
+  } catch (e) {}
+  try {
+    await db.printer.create({
+      data: {
+        id: 1,
+        name: 'ADM',
+        groups: 'user',
+      },
+    });
+  } catch (e) {}
 }
 
 init();

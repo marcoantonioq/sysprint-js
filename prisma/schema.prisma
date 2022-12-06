@@ -7,28 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
+model User {
   id             Int      @id @default(autoincrement())
-  name           String
+  name           String?
   username       String
   password       String
-  email          String   @unique
-  role           String
-  adress         String
+  email          String?  @unique
+  groups         String?
+  adress         String?
   status         Boolean  @default(true)
-  quota          Int
-  month_count    Int
-  thumbnailphoto String
-  job_count      Int
+  quota          Int?
+  month_count    Int?
+  thumbnailphoto String?
+  job_count      Int?
   modified       DateTime @updatedAt
   created        DateTime @default(now())
-  spool          Jobs[]
+  jobs           Job[]
 }
 
-model Printers {
+model Printer {
   id           Int      @id @default(autoincrement())
   allow        Boolean  @default(true)
-  name         String
+  name         String   @unique
+  groups       String?
   status       Boolean  @default(true)
   month_count  Int      @default(0)
   quota_period Int      @default(0)
@@ -36,27 +37,35 @@ model Printers {
   k_limit      Int      @default(0)
   modified     DateTime @updatedAt
   created      DateTime @default(now())
-  spool        Jobs[]
+  jobs         Job[]
 }
 
-model Jobs {
-  id          Int      @id
-  userId      Int
-  printersId  Int
-  pages       Int
-  copies      Int
-  host        String
-  file        String
-  params      String
-  status      String
-  description String
+model Job {
+  id          Int      @id @default(autoincrement())
+  jobid       Int?
+  userid      Int
+  printerid   Int
+  pages       Int?
+  host        String?
+  filename    String
+  size        Int?
+  encoding    String?
+  path        String
+  mimetype    String
+  md5         String?
+  params      String?
+  status      String?
+  complete    Boolean? @default(false)
+  description String?
   modified    DateTime @updatedAt
   created     DateTime @default(now())
-  user        Users    @relation(fields: [userId], references: [id])
-  Printers    Printers @relation(fields: [printersId], references: [id])
+  user        User?    @relation(fields: [userid], references: [id])
+  printer     Printer? @relation(fields: [printerid], references: [id])
+
+  @@index([userid, printerid])
 }
 
-model Settings {
+model Setting {
   group  String
   key    String
   value  String
@@ -65,7 +74,7 @@ model Settings {
   @@id([group, key], name: "setting")
 }
 
-model Loggers {
+model Logger {
   id          Int      @id @default(autoincrement())
   title       String
   description String

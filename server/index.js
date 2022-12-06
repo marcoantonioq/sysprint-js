@@ -1,9 +1,11 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import * as form from '../src/lib/formdata';
-import * as printers from '../src/controllers/printers.controller';
+import * as form from '../libs/formdata';
+import Job from './controllers/Job';
+import * as printers from './controllers/printers.controller';
+
 // eslint-disable-next-line import/namespace
-import * as users from '../src/controllers/users.controller';
+import * as users from './controllers/users.controller';
 
 import '../prisma/db';
 
@@ -29,6 +31,7 @@ app.get('/users/users', auth, users.users);
 app.post('/logout', auth, users.logout);
 app.get('/printers', auth, printers.getPrinters);
 app.post('/print', auth, printers.print);
+app.post('/spool/add', auth, Job.add);
 app.get('/jobs/:print/:id', auth, printers.job);
 app.post('/upload', auth, form.upLoadFiles);
 

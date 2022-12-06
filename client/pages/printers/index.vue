@@ -42,11 +42,16 @@
       <span>Selecionar impressora</span>
     </v-tooltip>
 
+    <div>
+      Mensagens:
+      {{ info }}
+    </div>
+
     <div class="d-flex justify-center flex-wrap">
       <v-btn
         class="mr-5"
         :loading="sending"
-        :disabled="sending || countPrinterSelected < 1 || form.files.length < 1"
+        :disabled="sending || !selectedPrinter || !selectedFiles"
         color="success"
         @click="sending = true"
       >
@@ -56,7 +61,7 @@
         </template>
       </v-btn>
     </div>
-    <div v-show="countPrinterSelected > 0">
+    <div v-show="selectedPrinter">
       <v-text-field
         v-model="form.copies"
         type="number"
@@ -97,7 +102,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'PrintersIndex',
@@ -126,8 +131,11 @@ export default {
     sending: false,
   }),
   computed: {
-    ...mapGetters(['printers']),
-    countPrinterSelected() {
+    ...mapState(['printers', 'info', 'errors']),
+    selectedFiles() {
+      return this.form.files.length;
+    },
+    selectedPrinter() {
       return this.printers?.reduce((ac, pr) => {
         if (pr.selected) ac++;
         return ac;
@@ -154,35 +162,29 @@ export default {
           form.orientation = form.orientation === 'Paisagem' ? '4' : '3';
         }
         form = this.$formData.jsonToFormData(form);
-        this.$store.dispatch('print', form).then((res) => {
+        this.$axios.$post('/api/print', form).then((res) => {
           this.sending = false;
+          this.form = {
+            user: 'user',
+            files: [],
+            copies: 1,
+            pages: '',
+            double_sided: '',
+            page_set: '',
+            media: 'A4',
+            orientation: '',
+          };
         });
-        this.form = {
-          user: 'user',
-          files: [],
-          copies: 1,
-          pages: '',
-          double_sided: '',
-          page_set: '',
-          media: 'A4',
-          orientation: '',
-        };
       }
     },
   },
-  mounted() {
-    this.reloadPrinters();
-  },
   methods: {
     ...mapMutations(['remove', 'togglePrinters']),
-    ...mapActions(['findPrint']),
+    ...mapActions(['reloadPrinters']),
     onFileChange(files) {
       this.form.files = files.filter((file) =>
         ['application/pdf', 'text/plain'].includes(file.type)
       );
-    },
-    async reloadPrinters() {
-      await this.findPrint();
     },
   },
 };

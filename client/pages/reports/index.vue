@@ -46,6 +46,6 @@ export default {
 
 
 <style lang="scss">
-@import '~/node_modules/ag-grid-community/dist/styles/ag-grid.css';
-@import '~/node_modules/ag-grid-community/dist/styles/ag-theme-balham.css';
+// @import '../node_modules/ag-grid-community/dist/styles/ag-grid.css';
+// @import '../node_modules/ag-grid-community/dist/styles/ag-theme-balham.css';
 </style>
