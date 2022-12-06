@@ -70,36 +70,28 @@ export const JobController = {
    */
   // eslint-disable-next-line require-await
   async add({ files, body, connection }, res) {
+    const jobs = [];
     try {
-      const user = await db.user.findUniqueOrThrow({
-        where: {
-          id: 1,
-        },
-      });
-      const printer = await db.printer.findUniqueOrThrow({
-        where: {
-          id: 1,
-        },
-      });
+      const user = await db.user.findUniqueOrThrow({ where: { id: 1 } });
+      const printer = await db.printer.findUniqueOrThrow({ where: { id: 1 } });
       const arquivos = Object.entries(files).map(([key, fileUpload]) => {
         return JobModel.mvFile(fileUpload);
       });
       const params = JobModel.createParams(body);
-      arquivos.forEach(async (file) => {
-        const result = await JobModel.create({
-          userId: user.id,
-          printerID: printer.id,
+      for (const file of arquivos) {
+        const job = await JobModel.create({
+          userid: user.id,
+          printerid: printer.id,
           params,
           ...file,
         });
-        console.log(`Result save: ${result}`);
-      });
+        jobs.push(job);
+      }
     } catch (e) {
       console.log(`Erro ao add jobs: ${e}`);
-      return res.json({ msg: 'Erro ao salvar', error: e });
+      return res.json({ msg: 'Erro ao salvar jobs', error: e });
     }
-
-    return res.json({ msg: 'ok' });
+    return res.json({ msg: 'ok', data: { jobs } });
   },
 };
 

@@ -1,5 +1,6 @@
 #iniciando cups e smb
 export NODE_OPTIONS=--openssl-legacy-provider
+find ./out -mindepth 1 -mtime +30 -type f -name '*.pdf' -delete
 
 /usr/sbin/cupsd
 /usr/sbin/smbd
