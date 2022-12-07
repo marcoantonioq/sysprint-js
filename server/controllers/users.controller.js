@@ -15,11 +15,6 @@ export class CreateUserController {
   }
 }
 
-export async function prints(req, res) {
-  const result = {};
-  return res.json(result);
-}
-
 export async function login(req, res) {
   return auth.authentication(req, res);
 }

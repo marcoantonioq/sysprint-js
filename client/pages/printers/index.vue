@@ -34,7 +34,7 @@
             @click="togglePrinters(el)"
             v-on="on"
           >
-            <v-icon color="darken-2">mdi-printer</v-icon>
+            <v-icon color="darken-2">{{ el.icon }}</v-icon>
             <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
           </a>
         </div>

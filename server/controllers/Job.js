@@ -1,7 +1,7 @@
 import db from '../../prisma/db';
 const { v4: uuidv4 } = require('uuid');
 
-const JobModel = {
+export const Job = {
   options: {
     user: '-U ',
     print: '-d ',
@@ -17,9 +17,23 @@ const JobModel = {
    * @param {Object} data Data Prisma
    * @returns
    */
-  async create(data) {
-    console.log(`Model Job add form: `, { data });
-    return await db.job.create({ data });
+  async save(data) {
+    if (data.id) {
+      const query = { data, where: { id: data.id } };
+      return await db.job.update(query);
+    } else {
+      data.status = 'Salvo....';
+      return await db.job.create({ data });
+    }
+  },
+  async findUnique(query) {
+    return await db.job.findUnique(query);
+  },
+  async findMany(query) {
+    return await db.job.findMany(query);
+  },
+  async updateMany(query) {
+    return await db.job.updateMany(query);
   },
   /**
    * Move arquivo e retorna objeto com o caminho da arquivo!
@@ -75,11 +89,11 @@ export const JobController = {
       const user = await db.user.findUniqueOrThrow({ where: { id: 1 } });
       const printer = await db.printer.findUniqueOrThrow({ where: { id: 1 } });
       const arquivos = Object.entries(files).map(([key, fileUpload]) => {
-        return JobModel.mvFile(fileUpload);
+        return Job.mvFile(fileUpload);
       });
-      const params = JobModel.createParams(body);
+      const params = Job.createParams(body);
       for (const file of arquivos) {
-        const job = await JobModel.create({
+        const job = await Job.save({
           userid: user.id,
           printerid: printer.id,
           params,

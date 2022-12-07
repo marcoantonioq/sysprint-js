@@ -12,6 +12,8 @@ CREATE TABLE "User" (
     "month_count" INTEGER,
     "thumbnailphoto" TEXT,
     "job_count" INTEGER,
+    "printers" TEXT,
+    "default_printer" TEXT,
     "modified" DATETIME NOT NULL,
     "created" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -21,7 +23,11 @@ CREATE TABLE "Printer" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "allow" BOOLEAN NOT NULL DEFAULT true,
     "name" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "localization" TEXT,
     "groups" TEXT,
+    "icon" TEXT,
+    "default" BOOLEAN NOT NULL DEFAULT false,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "month_count" INTEGER NOT NULL DEFAULT 0,
     "quota_period" INTEGER NOT NULL DEFAULT 0,
@@ -79,6 +85,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Printer_name_key" ON "Printer"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Printer_path_key" ON "Printer"("path");
 
 -- CreateIndex
 CREATE INDEX "Job_userid_printerid_idx" ON "Job"("userid", "printerid");

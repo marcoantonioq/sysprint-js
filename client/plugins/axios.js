@@ -7,14 +7,13 @@ export default (app) => {
     if (token) {
       req.headers.common.Authorization = token;
     }
-    console.log('On request!!!');
   });
 
   $axios.onResponse((req) => {});
 
   $axios.onError((error) => {
     // eslint-disable-next-line no-console
-    console.log('Erro requisição axios!');
+    console.log('Erro requisição axios: ', error);
     nuxtError({
       statusCode: error.response.status,
       message: error.message,

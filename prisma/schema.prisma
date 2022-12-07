@@ -8,28 +8,34 @@ datasource db {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  name           String?
-  username       String
-  password       String
-  email          String?  @unique
-  groups         String?
-  adress         String?
-  status         Boolean  @default(true)
-  quota          Int?
-  month_count    Int?
-  thumbnailphoto String?
-  job_count      Int?
-  modified       DateTime @updatedAt
-  created        DateTime @default(now())
-  jobs           Job[]
+  id              Int      @id @default(autoincrement())
+  name            String?
+  username        String
+  password        String
+  email           String?  @unique
+  groups          String?
+  adress          String?
+  status          Boolean  @default(true)
+  quota           Int?
+  month_count     Int?
+  thumbnailphoto  String?
+  job_count       Int?
+  printers        String?
+  default_printer String?
+  modified        DateTime @updatedAt
+  created         DateTime @default(now())
+  jobs            Job[]
 }
 
 model Printer {
   id           Int      @id @default(autoincrement())
   allow        Boolean  @default(true)
   name         String   @unique
+  path         String   @unique
+  localization String?
   groups       String?
+  icon         String?
+  default      Boolean  @default(false)
   status       Boolean  @default(true)
   month_count  Int      @default(0)
   quota_period Int      @default(0)

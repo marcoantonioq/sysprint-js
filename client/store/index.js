@@ -1,3 +1,8 @@
+/**
+ *  TypeScript
+ *  @typedef {import("./index").state } state
+ */
+
 export const state = () => ({
   printers: [],
   spools: [],
@@ -5,9 +10,22 @@ export const state = () => ({
 });
 
 export const mutations = {
+  /**
+   * Atualizar impressoras
+   * @param {state} state State
+   * @param {payload} payload Dados enviados
+   */
   updatePrinters(state, payload) {
+    payload.forEach((printer) => {
+      printer.selected = false;
+    });
     state.printers = payload;
   },
+  /**
+   * Alterar entre impressoras
+   * @param {state} state State
+   * @param {payload} payload Dados enviados
+   */
   togglePrinters(state, payload) {
     state.printers.map((print) => {
       print.selected = false;
@@ -21,9 +39,15 @@ export const actions = {
   async nuxtServerInit(store) {
     await store.dispatch('reloadPrinters');
   },
-  async reloadPrinters({ commit }, payload) {
+  /**
+   * Buscar lista de impressoras
+   * @param {Object} param0 store
+   * @param {payload} payload
+   * @returns Promise
+   */
+  async reloadPrinters({ commit, state }, payload) {
     const { data: printers } = await this.$axios.$get('/api/printers');
     commit('updatePrinters', printers);
-    return printers;
+    return state.printers;
   },
 };

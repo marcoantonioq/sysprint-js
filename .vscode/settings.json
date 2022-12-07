@@ -12,5 +12,5 @@
   ],
   "shortcuts.buttons": ["triangle-up , multiCommand.gitSync , Git Sync"],
   "editor.formatOnSave": true,
-  "cSpell.words": ["nuxt", "Vuelidate"]
+  "cSpell.words": ["jobid", "nuxt", "Vuelidate"]
 }
