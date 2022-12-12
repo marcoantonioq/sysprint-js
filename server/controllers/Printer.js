@@ -12,14 +12,22 @@ export const Printer = {
   },
   /**
    * Sava no banco de dados Prisma um JOB
-   * @param {Object} data Data Prisma
+   * @param {Object} data Data Prisma {path: ADM}
    * @returns
    */
   async save(data) {
-    if (data.id) {
-      const query = { data, where: { id: data.id } };
-      return await db.printer.update(query);
-    } else {
+    const { id, path } = data;
+    try {
+      const val = await db.printer.findUniqueOrThrow({
+        where: {
+          id,
+          path,
+        },
+      });
+      const where = { id: val.id };
+      return await db.printer.update({ data, where });
+    } catch (e) {
+      data.name = data.name || data.path;
       return await db.printer.create({ data });
     }
   },

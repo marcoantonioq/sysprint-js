@@ -1,11 +1,22 @@
 version: "3.3"
 
 services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: cupsadmin
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
   sysprint:
     build: .
     image: sysprint
     container_name: sysprint
     restart: always 
+    depends_on:
+      - db
     ports:
       - "80:80"
       - "631:631"
@@ -30,3 +41,4 @@ volumes:
   cups-spool:
   cups-data:
   smb-conf:
+  mysql:

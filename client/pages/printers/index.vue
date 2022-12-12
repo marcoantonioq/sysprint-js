@@ -22,12 +22,10 @@
       </template>
     </v-file-input>
 
-    <v-tooltip top>
-      <template #activator="{ on, attrs }">
-        <div class="d-flex justify-space-around flex-wrap printers">
+    <div class="d-flex justify-space-around flex-wrap printers">
+      <v-tooltip v-for="(el, i) in printers" :key="i" top>
+        <template #activator="{ on, attrs }">
           <a
-            v-for="(el, i) in printers"
-            :key="i"
             :class="{ selected: !el.selected }"
             class="d-flex flex-column align-content-center text-center"
             v-bind="attrs"
@@ -37,10 +35,10 @@
             <v-icon color="darken-2">{{ el.icon }}</v-icon>
             <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
           </a>
-        </div>
-      </template>
-      <span>Selecionar impressora</span>
-    </v-tooltip>
+        </template>
+        <span>{{ el.localization }}</span>
+      </v-tooltip>
+    </div>
 
     <div>
       Mensagens:
@@ -57,7 +55,7 @@
       >
         Imprimir
         <template #loader>
-          <span>Enviando...</span>
+          <span>Salvando...</span>
         </template>
       </v-btn>
     </div>

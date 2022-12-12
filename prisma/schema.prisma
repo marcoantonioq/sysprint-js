@@ -3,14 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id              Int      @id @default(autoincrement())
   name            String?
-  username        String
+  username        String   @unique
   password        String
   email           String?  @unique
   groups          String?
@@ -32,11 +32,16 @@ model Printer {
   allow        Boolean  @default(true)
   name         String   @unique
   path         String   @unique
+  description  String?
   localization String?
+  connection   String?
+  definitions  String?
+  driver       String?
   groups       String?
   icon         String?
   default      Boolean  @default(false)
   status       Boolean  @default(true)
+  selected     Boolean  @default(false)
   month_count  Int      @default(0)
   quota_period Int      @default(0)
   page_limite  Int      @default(0)

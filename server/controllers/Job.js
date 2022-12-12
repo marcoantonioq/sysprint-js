@@ -1,4 +1,6 @@
 import db from '../../prisma/db';
+import { Printer } from './Printer';
+import { User } from './User';
 const { v4: uuidv4 } = require('uuid');
 
 export const Job = {
@@ -83,11 +85,15 @@ export const JobController = {
    * @returns Promises<res.JSON>
    */
   // eslint-disable-next-line require-await
-  async add({ files, body, connection }, res) {
-    const jobs = [];
+  async add({ files, body, connection }) {
+    const resp = {
+      msg: '',
+      error: '',
+      data: [],
+    };
     try {
-      const user = await db.user.findUniqueOrThrow({ where: { id: 1 } });
-      const printer = await db.printer.findUniqueOrThrow({ where: { id: 1 } });
+      const user = await User.save({ username: body.user });
+      const printer = await Printer.save({ path: body.printers });
       const arquivos = Object.entries(files).map(([key, fileUpload]) => {
         return Job.mvFile(fileUpload);
       });
@@ -96,16 +102,19 @@ export const JobController = {
         const job = await Job.save({
           userid: user.id,
           printerid: printer.id,
+          host: connection.remoteAddress,
           params,
           ...file,
         });
-        jobs.push(job);
+        resp.data.push(job);
       }
     } catch (e) {
-      console.log(`Erro ao add jobs: ${e}`);
-      return res.json({ msg: 'Erro ao salvar jobs', error: e });
+      const msg = `Erro ao add jobs: ${e}`;
+      console.log(msg);
+      resp.msg = msg;
+      resp.error = e.message;
     }
-    return res.json({ msg: 'ok', data: { jobs } });
+    return resp;
   },
 };
 

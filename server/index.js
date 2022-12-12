@@ -1,11 +1,16 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import '../prisma/db';
+import { emitter } from './components/emitter';
 import Job from './controllers/Job';
+import lp from './services/lp';
 import Printer from './controllers/Printer';
-import services from './services';
 
-services();
+emitter.on('print', async (resp) => {
+  await lp.updatePrinters();
+  await lp.updateJobs();
+  await lp.execJobs();
+});
 
 // eslint-disable-next-line no-console
 // const CreateUserController = users.CreateUserController;
@@ -28,7 +33,11 @@ app.use(fileUpload());
 // app.get('/users/users', auth, users.users);
 // app.post('/logout', auth, users.logout);
 app.get('/printers', auth, Printer.index);
-app.post('/print', auth, Job.add);
+app.post('/print', auth, async (req, res) => {
+  const resp = await Job.add(req, res);
+  emitter.emit('print', resp);
+  res.json(resp);
+});
 
 app.get('/date', auth, (req, res) => {
   res.json({ date: new Date() });
