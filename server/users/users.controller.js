@@ -1,7 +1,7 @@
 /* eslint-disable require-await */
 import * as auth from '../../libs/auth';
 // eslint-disable-next-line no-unused-vars
-import db from '../../prisma/db';
+import db from '../data';
 
 export class CreateUserController {
   async handle(request, response) {

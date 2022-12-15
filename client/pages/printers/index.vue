@@ -1,102 +1,102 @@
-
 <template>
-  <v-form
-    ref="form"
-    action="/api/print"
-    method="post"
-    enctype="multipart/form-data"
-  >
-    <v-file-input
-      v-model="form.files"
-      class="file"
-      placeholder="Enviar seus documentos"
-      label="Arquivo (PDF)"
-      multiple
-      prepend-icon="mdi-paperclip"
-      @change="onFileChange"
-    >
-      <template #selection="{ text }">
-        <v-chip small label color="primary">
-          {{ text }}
-        </v-chip>
-      </template>
-    </v-file-input>
-
-    <div class="d-flex justify-space-around flex-wrap printers">
-      <v-tooltip v-for="(el, i) in printers" :key="i" top>
-        <template #activator="{ on, attrs }">
-          <a
-            :class="{ selected: !el.selected }"
-            class="d-flex flex-column align-content-center text-center"
-            v-bind="attrs"
-            @click="togglePrinters(el)"
-            v-on="on"
-          >
-            <v-icon color="darken-2">{{ el.icon }}</v-icon>
-            <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
-          </a>
-        </template>
-        <span>{{ el.localization }}</span>
-      </v-tooltip>
-    </div>
-
+  <div>
     <div>
-      Mensagens:
-      {{ info }}
+      <Spooler />
     </div>
 
-    <div class="d-flex justify-center flex-wrap">
-      <v-btn
-        class="mr-5"
-        :loading="sending"
-        :disabled="sending || !selectedPrinter || !selectedFiles"
-        color="success"
-        @click="sending = true"
+    <v-form
+      ref="form"
+      action="/api/print"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <v-file-input
+        v-model="form.files"
+        class="file"
+        placeholder="Enviar seus documentos"
+        label="Arquivo (PDF)"
+        multiple
+        prepend-icon="mdi-paperclip"
+        @change="onFileChange"
       >
-        Imprimir
-        <template #loader>
-          <span>Salvando...</span>
+        <template #selection="{ text }">
+          <v-chip small label color="primary">
+            {{ text }}
+          </v-chip>
         </template>
-      </v-btn>
-    </div>
-    <div v-show="selectedPrinter">
-      <v-text-field
-        v-model="form.copies"
-        type="number"
-        label="Cópias"
-        prepend-icon="mdi-content-copy"
-      />
-      <v-text-field
-        v-model="form.pages"
-        label="Páginas (ex: 1-5 ou 2,4)"
-        prepend-icon="mdi-arrange-bring-forward"
-      />
-      <v-select
-        v-model="form.double_sided"
-        :items="list.double_sided"
-        label="Frente/Verso"
-        prepend-icon="mdi-format-page-split"
-      ></v-select>
-      <v-select
-        v-model="form.page_set"
-        :items="list.page_set"
-        label="Folhas"
-        prepend-icon="mdi-book-open-page-variant"
-      ></v-select>
-      <v-select
-        v-model="form.media"
-        :items="list.media"
-        label="Papel"
-        prepend-icon="mdi-resize"
-      ></v-select>
-      <v-select
-        v-model="form.orientation"
-        :items="list.orientation"
-        label="Orientação"
-        prepend-icon="mdi-flip-vertical"
-      ></v-select>
-    </div>
-  </v-form>
+      </v-file-input>
+
+      <div class="d-flex justify-space-around flex-wrap printers">
+        <v-tooltip v-for="(el, i) in printers" :key="i" top>
+          <template #activator="{ on, attrs }">
+            <a
+              :class="{ selected: !el.data.selected }"
+              class="d-flex flex-column align-content-center text-center"
+              v-bind="attrs"
+              @click="togglePrinters(el.data)"
+              v-on="on"
+            >
+              <v-icon color="darken-2">{{ el.settings.icon }}</v-icon>
+              <div class="subtitle">{{ el.data.name }}&nbsp;&nbsp;&nbsp;</div>
+            </a>
+          </template>
+          <span>{{ el.data.localization }}</span>
+        </v-tooltip>
+      </div>
+
+      <div class="d-flex justify-center flex-wrap">
+        <v-btn
+          class="mr-5"
+          :loading="sending"
+          :disabled="sending || !selectedPrinter || !selectedFiles"
+          color="success"
+          @click="sending = true"
+        >
+          Imprimir
+          <template #loader>
+            <span>Salvando...</span>
+          </template>
+        </v-btn>
+      </div>
+      <div v-show="selectedPrinter">
+        <v-text-field
+          v-model="form.copies"
+          type="number"
+          label="Cópias"
+          prepend-icon="mdi-content-copy"
+        />
+        <v-text-field
+          v-model="form.pages"
+          label="Páginas (ex: 1-5 ou 2,4)"
+          prepend-icon="mdi-arrange-bring-forward"
+        />
+        <v-select
+          v-model="form.double_sided"
+          :items="list.double_sided"
+          label="Frente/Verso"
+          prepend-icon="mdi-format-page-split"
+        ></v-select>
+        <v-select
+          v-model="form.page_set"
+          :items="list.page_set"
+          label="Folhas"
+          prepend-icon="mdi-book-open-page-variant"
+        ></v-select>
+        <v-select
+          v-model="form.media"
+          :items="list.media"
+          label="Papel"
+          prepend-icon="mdi-resize"
+        ></v-select>
+        <v-select
+          v-model="form.orientation"
+          :items="list.orientation"
+          label="Orientação"
+          prepend-icon="mdi-flip-vertical"
+        ></v-select>
+      </div>
+    </v-form>
+  </div>
 </template>
 
 <script>
@@ -135,7 +135,7 @@ export default {
     },
     selectedPrinter() {
       return this.printers?.reduce((ac, pr) => {
-        if (pr.selected) ac++;
+        if (pr.data.selected) ac++;
         return ac;
       }, 0);
     },
@@ -146,8 +146,8 @@ export default {
         let form = {
           ...this.form,
           printers: this.printers
-            ?.filter((pr) => pr.selected)
-            ?.map((el) => el.name)
+            ?.filter((pr) => pr.data.selected)
+            ?.map((el) => el.data.name)
             ?.join(','),
         };
         if (form.double_sided) {
@@ -160,7 +160,7 @@ export default {
           form.orientation = form.orientation === 'Paisagem' ? '4' : '3';
         }
         form = this.$formData.jsonToFormData(form);
-        this.$axios.$post('/api/print', form).then((res) => {
+        this.$axios.$post('/api/printers/print', form).then((res) => {
           this.sending = false;
           this.form = {
             user: 'user',

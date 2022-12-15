@@ -17,7 +17,7 @@ export const mutations = {
    */
   updatePrinters(state, payload) {
     payload.forEach((printer) => {
-      printer.selected = false;
+      printer.data.selected = false;
     });
     state.printers = payload;
   },
@@ -28,7 +28,7 @@ export const mutations = {
    */
   togglePrinters(state, payload) {
     state.printers.map((print) => {
-      print.selected = false;
+      print.data.selected = false;
       return print;
     });
     payload.selected = !payload.selected;

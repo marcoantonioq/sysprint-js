@@ -1,4 +1,4 @@
-import db from '../../prisma/db';
+import db from '../data';
 
 export const User = {
   state: {

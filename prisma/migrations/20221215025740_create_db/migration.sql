@@ -51,11 +51,11 @@ CREATE TABLE `Printer` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Job` (
+CREATE TABLE `Spool` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `jobid` INTEGER NULL,
-    `userid` INTEGER NOT NULL,
-    `printerid` INTEGER NOT NULL,
+    `user` VARCHAR(191) NOT NULL,
+    `printer` VARCHAR(191) NOT NULL,
     `pages` INTEGER NULL,
     `host` VARCHAR(191) NULL,
     `filename` VARCHAR(191) NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `Job` (
     `modified` DATETIME(3) NOT NULL,
     `created` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    INDEX `Job_userid_printerid_idx`(`userid`, `printerid`),
+    INDEX `Spool_user_printer_idx`(`user`, `printer`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -95,9 +95,3 @@ CREATE TABLE `Logger` (
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- AddForeignKey
-ALTER TABLE `Job` ADD CONSTRAINT `Job_userid_fkey` FOREIGN KEY (`userid`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Job` ADD CONSTRAINT `Job_printerid_fkey` FOREIGN KEY (`printerid`) REFERENCES `Printer`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -24,7 +24,6 @@ model User {
   default_printer String?
   modified        DateTime @updatedAt
   created         DateTime @default(now())
-  jobs            Job[]
 }
 
 model Printer {
@@ -48,14 +47,13 @@ model Printer {
   k_limit      Int      @default(0)
   modified     DateTime @updatedAt
   created      DateTime @default(now())
-  jobs         Job[]
 }
 
-model Job {
+model Spool {
   id          Int      @id @default(autoincrement())
   jobid       Int?
-  userid      Int
-  printerid   Int
+  user        String
+  printer     String
   pages       Int?
   host        String?
   filename    String
@@ -70,10 +68,8 @@ model Job {
   description String?
   modified    DateTime @updatedAt
   created     DateTime @default(now())
-  user        User?    @relation(fields: [userid], references: [id])
-  printer     Printer? @relation(fields: [printerid], references: [id])
 
-  @@index([userid, printerid])
+  @@index([user, printer])
 }
 
 model Setting {
