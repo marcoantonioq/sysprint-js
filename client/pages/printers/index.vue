@@ -162,16 +162,19 @@ export default {
         form = this.$formData.jsonToFormData(form);
         this.$axios.$post('/api/printers/print', form).then((res) => {
           this.sending = false;
-          this.form = {
-            user: 'user',
-            files: [],
-            copies: 1,
-            pages: '',
-            double_sided: '',
-            page_set: '',
-            media: 'A4',
-            orientation: '',
-          };
+          try {
+            this.form = {
+              user: 'user',
+              files: [],
+              copies: 1,
+              pages: '',
+              double_sided: '',
+              page_set: '',
+              media: 'A4',
+              orientation: '',
+            };
+            this.togglePrinters();
+          } catch (e) {}
         });
       }
     },
