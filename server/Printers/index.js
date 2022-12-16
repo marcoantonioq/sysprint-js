@@ -4,6 +4,7 @@ import Events from 'events';
 import db from '../data';
 import { EventsPrinter, EventsSpool } from '../data/Constants';
 import Util from '../../util';
+
 const util = require('util');
 const ipp = require('@sealsystems/ipp');
 const exec = util.promisify(require('child_process').exec);
@@ -274,7 +275,7 @@ export const PrinterController = {
    * @param {*} res
    * @returns
    */
-  index({ files, body }, res) {
+  index(_req, res) {
     return res.json({ data: app.sysprint.printers });
   },
 

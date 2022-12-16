@@ -1,5 +1,6 @@
+<!-- eslint-disable no-console -->
 <template>
-  <div v-if="desserts.length > 0" class="spool">
+  <div v-if="desserts.length > 0" class="spool" @click="click">
     <v-data-table
       :headers="headers"
       :items="desserts"
@@ -8,15 +9,20 @@
       hide-default-footer
       loading
     ></v-data-table>
+    {{ messageRxd }}
   </div>
 </template>
 
 <script>
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3010');
+
 export default {
   name: 'SpoolsComponents',
   data() {
     return {
-      messageRxd: '',
+      messageRxd: '...',
       headers: [
         // {
         //   text: 'Usuário',
@@ -32,21 +38,18 @@ export default {
     };
   },
   mounted() {
-    // setInterval(this.update, 10000);
     this.update();
-    this.socket = this.$nuxtSocket({
-      name: 'home',
-    });
-    this.$on('teste', (msg) => {
-      console.log('Recebido Teste: ', msg);
+    socket.on('msg', (message) => {
+      console.log('Msg: ', message);
+      this.messageRxd = message;
     });
   },
   methods: {
+    click() {},
     async update() {
       const { data } = await this.$axios.$post('/api/printers/spools');
       this.desserts = data.map((el) => {
         el.data.status = `${el.data.status || ''} ${el.data.description || ''}`;
-        console.log(el.data);
         return el.data;
       });
     },

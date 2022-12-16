@@ -41,7 +41,12 @@ export default {
 
   buildModules: ['@nuxtjs/vuetify', '@nuxtjs/eslint-module'],
 
-  modules: ['@nuxtjs/axios', 'cookie-universal-nuxt', 'nuxt-highcharts'],
+  modules: [
+    '@nuxtjs/axios',
+    'cookie-universal-nuxt',
+    'nuxt-highcharts',
+    'nuxt-socket-io',
+  ],
 
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -71,5 +76,16 @@ export default {
   axios: {
     proxy: true,
     retry: { retries: 3 },
+  },
+
+  io: {
+    // module options
+    sockets: [
+      {
+        name: 'main',
+        default: true,
+        url: 'localhost:3000',
+      },
+    ],
   },
 };
