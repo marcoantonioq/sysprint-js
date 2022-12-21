@@ -53,7 +53,7 @@ CREATE TABLE `Printer` (
 -- CreateTable
 CREATE TABLE `Spool` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `jobid` INTEGER NULL,
+    `jobid` INTEGER NOT NULL,
     `user` VARCHAR(191) NOT NULL,
     `printer` VARCHAR(191) NOT NULL,
     `pages` INTEGER NULL,
@@ -71,6 +71,7 @@ CREATE TABLE `Spool` (
     `modified` DATETIME(3) NOT NULL,
     `created` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `Spool_jobid_key`(`jobid`),
     INDEX `Spool_user_printer_idx`(`user`, `printer`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

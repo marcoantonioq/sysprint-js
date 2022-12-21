@@ -35,18 +35,14 @@ export default {
     { src: '@/plugins/dayjs' },
     { src: '@/plugins/services' },
     { src: '@/plugins/global' },
+    { src: '@/plugins/socket' },
   ],
 
   components: true,
 
   buildModules: ['@nuxtjs/vuetify', '@nuxtjs/eslint-module'],
 
-  modules: [
-    '@nuxtjs/axios',
-    'cookie-universal-nuxt',
-    'nuxt-highcharts',
-    'nuxt-socket-io',
-  ],
+  modules: ['@nuxtjs/axios', 'cookie-universal-nuxt', 'nuxt-highcharts'],
 
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -76,16 +72,5 @@ export default {
   axios: {
     proxy: true,
     retry: { retries: 3 },
-  },
-
-  io: {
-    // module options
-    sockets: [
-      {
-        name: 'main',
-        default: true,
-        url: 'localhost:3000',
-      },
-    ],
   },
 };

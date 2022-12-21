@@ -30,17 +30,17 @@
         <v-tooltip v-for="(el, i) in printers" :key="i" top>
           <template #activator="{ on, attrs }">
             <a
-              :class="{ selected: !el.data.selected }"
+              :class="{ selected: !el.selected }"
               class="d-flex flex-column align-content-center text-center"
               v-bind="attrs"
-              @click="togglePrinters(el.data)"
+              @click="togglePrinters(el)"
               v-on="on"
             >
-              <v-icon color="darken-2">{{ el.settings.icon }}</v-icon>
-              <div class="subtitle">{{ el.data.name }}&nbsp;&nbsp;&nbsp;</div>
+              <v-icon color="darken-2">{{ el.icon }}</v-icon>
+              <div class="subtitle">{{ el.name }}&nbsp;&nbsp;&nbsp;</div>
             </a>
           </template>
-          <span>{{ el.data.localization }}</span>
+          <span>{{ el.localization }}</span>
         </v-tooltip>
       </div>
 
@@ -135,7 +135,7 @@ export default {
     },
     selectedPrinter() {
       return this.printers?.reduce((ac, pr) => {
-        if (pr.data.selected) ac++;
+        if (pr.selected) ac++;
         return ac;
       }, 0);
     },
@@ -145,9 +145,10 @@ export default {
       if (this.sending) {
         let form = {
           ...this.form,
+          path: this.printers?.find((pr) => pr.selected).path,
           printers: this.printers
-            ?.filter((pr) => pr.data.selected)
-            ?.map((el) => el.data.name)
+            ?.filter((pr) => pr.selected)
+            ?.map((el) => el.name)
             ?.join(','),
         };
         if (form.double_sided) {

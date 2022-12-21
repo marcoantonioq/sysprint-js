@@ -16,10 +16,12 @@ export const mutations = {
    * @param {payload} payload Dados enviados
    */
   updatePrinters(state, payload) {
-    payload.forEach((printer) => {
-      printer.data.selected = false;
-    });
-    state.printers = payload;
+    try {
+      payload.forEach((printer) => {
+        printer.selected = false;
+      });
+      state.printers = payload;
+    } catch (e) {}
   },
   /**
    * Alterar entre impressoras
@@ -28,7 +30,7 @@ export const mutations = {
    */
   togglePrinters(state, payload) {
     state.printers.map((print) => {
-      print.data.selected = false;
+      print.selected = false;
       return print;
     });
     payload.selected = !payload.selected;

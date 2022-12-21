@@ -2,8 +2,7 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import Printer from './Printers';
 
-const { createServer } = require('http');
-const { Server } = require('socket.io');
+require('./emitter/socketIO');
 
 const auth = function (req, res, next) {
   next(); // disable auth
@@ -14,29 +13,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
-const httpServer = createServer(app);
-
-const io = new Server(httpServer, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
-  },
-});
-io.on('connection', (socket) => {
-  socket.emit('msg', 'Client conectado!');
-});
-
-io.sockets.on('connection', function (socket) {
-  console.log('Cliente: ', socket.id);
-});
-app.all('/init', (req, res) => {
-  try {
-    io.emit('msg', `Time: ${new Date().toLocaleTimeString()}`);
-  } catch (error) {
-    console.log('Erro ws::: ', error);
-  }
-  res.json({ msg: 'server is set' });
-});
 
 // app.post('/login', users.login);
 // app.get('/users/user', auth, users.logged);
@@ -55,11 +31,6 @@ app.get('/date', auth, (req, res) => {
 // Error handler
 app.use((err, _req, res) => {
   res.status(401).send(err + '');
-});
-
-const port = '3010';
-httpServer.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
 });
 // -- export app --
 export default app;

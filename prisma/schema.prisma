@@ -51,7 +51,7 @@ model Printer {
 
 model Spool {
   id          Int      @id @default(autoincrement())
-  jobid       Int?
+  jobid       Int      @unique
   user        String
   printer     String
   pages       Int?

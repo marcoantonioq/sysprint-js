@@ -14,10 +14,6 @@
 </template>
 
 <script>
-import { io } from 'socket.io-client';
-
-const socket = io('http://localhost:3010');
-
 export default {
   name: 'SpoolsComponents',
   data() {
@@ -39,9 +35,9 @@ export default {
   },
   mounted() {
     this.update();
-    socket.on('msg', (message) => {
-      console.log('Msg: ', message);
-      this.messageRxd = message;
+    this.$socket.on('spools', (spools) => {
+      console.log('Msg: ', spools);
+      this.messageRxd = spools;
     });
   },
   methods: {
@@ -52,6 +48,7 @@ export default {
         el.data.status = `${el.data.status || ''} ${el.data.description || ''}`;
         return el.data;
       });
+      console.log(this.desserts);
     },
   },
 };
