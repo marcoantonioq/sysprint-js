@@ -199,6 +199,7 @@ export default {
 
 .printers {
   padding-bottom: 0.8rem;
+
   a {
     padding: 10px;
     color: #000;
@@ -207,6 +208,7 @@ export default {
       font-size: 70px;
       color: green;
     }
+
     .subtitle {
       top: -15px;
       max-width: 150px;
@@ -215,6 +217,7 @@ export default {
 
   a.selected {
     filter: opacity(40%);
+
     .v-icon {
       font-size: 70px;
       color: #000;

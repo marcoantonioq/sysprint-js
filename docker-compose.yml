@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: cupsadmin
+      TZ: "America/Sao_Paulo"
     volumes:
       - mysql:/var/lib/mysql
     ports:

@@ -1,6 +1,8 @@
 FROM node:18.12.1
 WORKDIR /app
 
+ENV TZ="America/Sao_Paulo"
+
 RUN  apt-get update \
     && apt-get install -y wget pandoc curl git openssl gnupg ca-certificates zlib1g-dev libmcrypt-dev libicu-dev g++ cups vim net-tools smbclient \
     samba samba-common-bin libldb-dev libldap-dev sudo printer-driver-cups-pdf cups-filters foomatic-db-compressed-ppds printer-driver-all \
@@ -8,8 +10,8 @@ RUN  apt-get update \
     && apt-get clean && sudo apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
 
-RUN sudo useradd -g lpadmin cupsadmin
-RUN echo 'admin\nadmin' | passwd cupsadmin
+RUN ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && dpkg-reconfigure -f noninteractive tzdata 
+RUN sudo useradd -g lpadmin cupsadmin && echo 'admin\nadmin' | passwd cupsadmin
 COPY ./shell/cupsd.conf /etc/cups
 
 ENV HOST 0.0.0.0
