@@ -2,11 +2,11 @@ FROM ubuntu:22.04
 LABEL maintainer="Marco Antônio <ti.goias@ifg.edu.br>"
 
 # Variáveis
+ENV ADMIN_USER=${ADMIN_USER}
+ENV ADMIN_PASS=${ADMIN_PASS}
 ENV TZ="America/Sao_Paulo" \
     LANG="pt_BR.UTF-8" \
-    DEBIAN_FRONTEND=noninteractive \
-    ADMIN_USER=admin \
-    ADMIN_PASS=admin
+    DEBIAN_FRONTEND=noninteractive
 
 # Pacotes
 RUN apt-get update && apt-get install -y \
@@ -23,14 +23,12 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
 
 # Admin
 RUN useradd -g lpadmin $ADMIN_USER && \
-    echo '$ADMIN_USER:$ADMIN_PASS' | chpasswd
+    echo "$ADMIN_USER:$ADMIN_PASS" | chpasswd
 
 # CUPS
 COPY config/start /start
 COPY config/cupsd.conf /etc/cups/cupsd.conf
 RUN chmod +x /start
-# && sed -iE 's/Listen .*:631/Port 631/' /etc/cups/cupsd.conf \
-# && sed -i '/<Location \/>/a Allow @LOCAL\nAllow all' /etc/cups/cupsd.conf
 
 # Set working directory
 WORKDIR /app
