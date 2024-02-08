@@ -19,7 +19,7 @@ services:
       - smb-conf:/etc/samba/
     ports:
       - "631:631"
-      - "3010:3000"
+      - "80:3000"
 volumes:
   cups-config:
   cups-logs:
