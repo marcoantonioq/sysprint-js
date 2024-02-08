@@ -1,29 +1,52 @@
-FROM node:18.12.1
+FROM ubuntu:22.04
+LABEL maintainer="Marco Antônio <ti.goias@ifg.edu.br>"
+
+# Variáveis
+ENV TZ="America/Sao_Paulo" \
+    LANG="pt_BR.UTF-8" \
+    DEBIAN_FRONTEND=noninteractive \
+    ADMIN_USER=admin \
+    ADMIN_PASS=admin
+
+# Pacotes
+RUN apt-get update && apt-get install -y \
+    curl gnupg poppler-utils zlib1g-dev libmcrypt-dev libicu-dev g++ cups cups-pdf cups-client vim net-tools smbclient \
+    samba samba-common-bin libldb-dev libldap-dev printer-driver-cups-pdf cups-filters foomatic-db-compressed-ppds printer-driver-all \
+    openprinting-ppds hpijs-ppds hpijs-ppds hp-ppd hplip && \
+    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Timezone
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+# Admin
+RUN useradd -g lpadmin $ADMIN_USER && \
+    echo '$ADMIN_USER:$ADMIN_PASS' | chpasswd
+
+# CUPS
+COPY config/start /start
+COPY config/cupsd.conf /etc/cups/cupsd.conf
+RUN chmod +x /start
+# && sed -iE 's/Listen .*:631/Port 631/' /etc/cups/cupsd.conf \
+# && sed -i '/<Location \/>/a Allow @LOCAL\nAllow all' /etc/cups/cupsd.conf
+
+# Set working directory
 WORKDIR /app
 
-ENV TZ="America/Sao_Paulo"
+# Copiando
+COPY client /app/client
+COPY server /app/server
 
-RUN  apt-get update \
-    && apt-get install -y wget pandoc curl git openssl gnupg ca-certificates zlib1g-dev libmcrypt-dev libicu-dev g++ cups vim net-tools smbclient \
-    samba samba-common-bin libldb-dev libldap-dev sudo printer-driver-cups-pdf cups-filters foomatic-db-compressed-ppds printer-driver-all \
-    openprinting-ppds hpijs-ppds hpijs-ppds hp-ppd hplip printer-driver-gutenprint printer-driver-escpr  openprinting-ppds \
-    && apt-get clean && sudo apt-get autoremove \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app/client
+RUN npm install && npm run build
 
-RUN ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && dpkg-reconfigure -f noninteractive tzdata 
-RUN sudo useradd -g lpadmin cupsadmin && echo 'admin\nadmin' | passwd cupsadmin
-COPY ./shell/cupsd.conf /etc/cups
+WORKDIR /app/server
+RUN npm install && npm run build
 
-ENV HOST 0.0.0.0
+# Portas
+EXPOSE 3000 136 137 138 139 445 631
 
-EXPOSE 3000
-EXPOSE 80
-EXPOSE 135
-EXPOSE 136
-EXPOSE 137
-EXPOSE 138
-EXPOSE 139
-EXPOSE 445
-EXPOSE 631
-
-CMD ["shell/init.sh"]
+# Run
+CMD ["/start"]

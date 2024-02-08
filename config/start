@@ -1,0 +1,7 @@
+#!/bin/sh
+echo "Iniciando cupsd..."
+/usr/sbin/cupsd
+# /usr/sbin/smbd
+# /usr/sbin/nmbd
+
+npm run start

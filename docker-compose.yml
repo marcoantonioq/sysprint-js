@@ -1,45 +1,28 @@
-version: "3.3"
+version: "3.8"
 
 services:
-  db:
-    image: mariadb
+  sysprint:
+    container_name: sysprint
+    image: sysprint
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: cupsadmin
-      TZ: "America/Sao_Paulo"
+      - ADMIN_USER=admin
+      - ADMIN_PASS=cupsadmin
     volumes:
-      - mysql:/var/lib/mysql
-    ports:
-      - "3306:3306"
-  sysprint:
-    build: .
-    image: sysprint
-    container_name: sysprint
-    restart: always 
-    depends_on:
-      - db
-    ports:
-      - "80:80"
-      - "631:631"
-      - "135:135"
-      - "136:136"
-      - "137:137"
-      - "138:138"
-      - "139:139"
-      - "445:445"
-    volumes:
-      - ./:/app
-      - cups-logs:/var/log/cups/
       - cups-config:/etc/cups/
+      - cups-logs:/var/log/cups/
       - cups-spool:/var/spool/cups/
       - cups-data:/usr/share/cups/
       - smb-conf:/etc/samba/
-    stdin_open: true
-    tty: true
+    ports:
+      - "631:631"
+      - "3010:3000"
 volumes:
-  cups-logs: 
   cups-config:
+  cups-logs:
   cups-spool:
   cups-data:
   smb-conf:
-  mysql:
