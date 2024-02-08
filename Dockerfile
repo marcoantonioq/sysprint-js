@@ -10,7 +10,7 @@ ENV TZ="America/Sao_Paulo" \
 
 # Pacotes
 RUN apt-get update && apt-get install -y \
-    curl gnupg poppler-utils zlib1g-dev libmcrypt-dev libicu-dev g++ cups cups-pdf cups-client vim net-tools smbclient \
+    git curl gnupg poppler-utils zlib1g-dev libmcrypt-dev libicu-dev g++ cups cups-pdf cups-client vim net-tools smbclient \
     samba samba-common-bin libldb-dev libldap-dev printer-driver-cups-pdf cups-filters foomatic-db-compressed-ppds printer-driver-all \
     openprinting-ppds hpijs-ppds hpijs-ppds hp-ppd hplip && \
     curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
@@ -30,12 +30,8 @@ COPY config/start /start
 COPY config/cupsd.conf /etc/cups/cupsd.conf
 RUN chmod +x /start
 
-# Set working directory
-WORKDIR /app
-
 # Copiando
-COPY client /app/client
-COPY server /app/server
+RUN git clone https://github.com/marcoantonioq/sysprint-js.git /app
 
 WORKDIR /app/client
 RUN npm install && npm run build

@@ -13,6 +13,19 @@ function sleep(ms: number) {
 /**
  * Armazenamento de dados
  */
+
+async function createFolder(path: string) {
+  try {
+    await fs.promises.access(path, fs.constants.F_OK);
+  } catch (error) {
+    try {
+      await fs.promises.mkdir(path, { recursive: true });
+      console.log("Pasta criada com sucesso:", path);
+    } catch (err) {
+      console.error("Erro ao criar a pasta:", err);
+    }
+  }
+}
 /**
  * Autenticação
  */
@@ -39,6 +52,7 @@ export async function print(req: Request, res: Response) {
         : [req.files.files];
 
     for (const file of files) {
+      await createFolder("uploads");
       const path = `uploads/${Date.now()}.pdf`;
       await file.mv(path);
       try {
@@ -112,7 +126,6 @@ export async function printers(req: Request, res: Response) {
   try {
     const printers = await repoPrinters.list();
     // console.log("Lista de impressoras: ", printers);
-
     response.success(printers);
   } catch (error) {
     response.error(`Erro ao realizar a impressão: ${error}`);
