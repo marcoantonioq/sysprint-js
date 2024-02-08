@@ -7,10 +7,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - ADMIN_USER=admin
+        - ADMIN_PASS=cupsadmin
     restart: always
-    environment:
-      - ADMIN_USER=admin
-      - ADMIN_PASS=cupsadmin
     volumes:
       - cups-config:/etc/cups/
       - cups-logs:/var/log/cups/

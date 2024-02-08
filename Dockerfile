@@ -2,8 +2,8 @@ FROM ubuntu:22.04
 LABEL maintainer="Marco Antônio <ti.goias@ifg.edu.br>"
 
 # Variáveis
-ENV ADMIN_USER=${ADMIN_USER}
-ENV ADMIN_PASS=${ADMIN_PASS}
+ARG ADMIN_USER=${ADMIN_USER}
+ARG ADMIN_PASS=${ADMIN_PASS}
 ENV TZ="America/Sao_Paulo" \
     LANG="pt_BR.UTF-8" \
     DEBIAN_FRONTEND=noninteractive
