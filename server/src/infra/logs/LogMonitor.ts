@@ -52,19 +52,23 @@ export class LogMonitor {
 
   private read() {
     fs.readFile(this.filePath, "utf8", (err, data) => {
-      if (err) {
-        console.error(`Erro ao ler o arquivo de log: ${err}`);
-        this.lastProcessedIndex = 0;
-        return;
-      }
-      const logs = data.split("\n");
-      const newLogs = logs.slice(this.lastProcessedIndex);
-      for (const log of newLogs) {
-        if (log.trim() !== "") {
-          this.events.emit("log", log);
+      try {
+        if (err) {
+          console.error(`Erro ao ler o arquivo de log: ${err}`);
+          this.lastProcessedIndex = 0;
+          return;
         }
+        const logs = data.split("\n");
+        const newLogs = logs.slice(this.lastProcessedIndex);
+        for (const log of newLogs) {
+          if (log.trim() !== "") {
+            this.events.emit("log", log);
+          }
+        }
+        this.lastProcessedIndex = logs.length - 1;
+      } catch (error) {
+        console.log("Erro readFile:::", error);
       }
-      this.lastProcessedIndex = logs.length - 1;
     });
   }
 }

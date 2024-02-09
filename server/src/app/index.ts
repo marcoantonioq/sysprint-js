@@ -20,8 +20,12 @@ try {
   const pageLog = new LogMonitor("/var/log/cups/page_log", events);
   pageLog.start();
   pageLog.events.on("log", (log: any) => {
-    const pageLog = JSON.parse(log) as PageLog;
-    console.log("Paginas log::: ", pageLog);
+    try {
+      const pageLog = JSON.parse(log) as PageLog;
+      console.log("Paginas log::: ", pageLog);
+    } catch (error) {
+      console.log(error);
+    }
   });
 } catch (error) {
   console.error(`Erro ao analisar entrada de registro: ${error}`);
