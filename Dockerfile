@@ -25,13 +25,12 @@ RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
 RUN useradd -g lpadmin $ADMIN_USER && \
     echo "$ADMIN_USER:$ADMIN_PASS" | chpasswd
 
-# CUPS
-COPY config/start /start
-COPY config/cupsd.conf /etc/cups/cupsd.conf
-RUN chmod +x /start
-
 # Copiando
 RUN git clone https://github.com/marcoantonioq/sysprint-js.git /app
+
+# CUPS
+RUN cp /app/config/cupsd.conf /etc/cups/cupsd.conf && \ 
+    chmod +x /app/config/start
 
 WORKDIR /app/client
 RUN npm install && npm run build
@@ -43,4 +42,4 @@ RUN npm install && npm run build
 EXPOSE 3000 136 137 138 139 445 631
 
 # Run
-CMD ["/start"]
+CMD ["/app/config/start"]
