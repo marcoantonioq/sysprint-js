@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Start Express
-npm install 
-npm run dev

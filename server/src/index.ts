@@ -1,3 +1,6 @@
-import http from "./infra/http";
+import { app } from "./app";
+import { startHTTP } from "./modules/http";
+import { startLog } from "./modules/logs";
 
-http.start();
+startLog(app);
+startHTTP(app);

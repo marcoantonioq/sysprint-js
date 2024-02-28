@@ -1,0 +1,15 @@
+// app global css in SCSS form
+
+html {
+  overflow-y: scroll;
+}
+html ::-webkit-scrollbar {
+  width: 8px;
+}
+html ::-webkit-scrollbar-thumb {
+  border-radius: 50px;
+  background: #d4d9e2;
+}
+html ::-webkit-scrollbar-track {
+  background: #ededed;
+}
