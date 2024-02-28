@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!props.printers">Nenhum impressora encontrada</div>
+  <div v-show="!props.printers.length">Nenhum impressora encontrada</div>
   <div class="row flex-center">
     <div
       class="printer column items-center q-ma-lg"
