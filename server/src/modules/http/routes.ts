@@ -19,7 +19,7 @@ export function setupRoutes(appExpress: Express, app: App): void {
 
   appExpress.use(
     "/",
-    express.static(path.resolve(__dirname, "../../../../client/dist/spa"))
+    express.static(path.resolve(__dirname, "../../../../client/dist/pwa"))
   );
 
   appExpress.post("/api/print", async (req: Request, res: Response) => {
