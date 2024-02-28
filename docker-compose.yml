@@ -8,15 +8,22 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - ADMIN_USER=admin
-        - ADMIN_PASS=cupsadmin
+        ADMIN_USER: admin
+        ADMIN_PASS: cupsadmin
     restart: always
     volumes:
-      - ./data/cups-config:/etc/cups/
-      - ./data/cups-logs:/var/log/cups/
-      - ./data/cups-spool:/var/spool/cups/
-      - ./data/cups-data:/usr/share/cups/
-      - ./data/smb-conf:/etc/samba/
+      - cups-config:/etc/cups
+      - cups-logs:/var/log/cups
+      - cups-spool:/var/spool/cups
+      - cups-data:/usr/share/cups
+      - smb-conf:/etc/samba
     ports:
       - "631:631"
       - "80:3000"
+
+volumes:
+  cups-config:
+  cups-logs:
+  cups-spool:
+  cups-data:
+  smb-conf:
