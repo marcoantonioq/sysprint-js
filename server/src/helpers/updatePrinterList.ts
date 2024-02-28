@@ -10,6 +10,12 @@ async function getPrinterNames(): Promise<string[]> {
     if (stderr) {
       throw new Error(`Erro ao obter a lista de impressoras: ${stderr}`);
     }
+    if (typeof stdout !== "string") {
+      throw new Error(
+        `Saída lpstat inválida ou não ha impressoras configurada!`
+      );
+    }
+
     return stdout
       .trim()
       .split("\n")
