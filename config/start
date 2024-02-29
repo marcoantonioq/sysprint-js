@@ -4,4 +4,6 @@ echo "Iniciando cupsd..."
 # /usr/sbin/smbd
 # /usr/sbin/nmbd
 
+# sudo cupsctl --set-event-config subscribe=job-state
+
 npm run start
