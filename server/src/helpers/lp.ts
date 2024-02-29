@@ -77,13 +77,27 @@ async function lp(o: Spool): Promise<Spool> {
 
     const command = commandParts.join(" ").replace(" -o page-set=all", "");
 
-    console.log("Comando de impressão::: ", command);
-
     const { stdout, stderr } = await exec(command);
+
+    if (!stdout) {
+      throw new Error("Retorno do comando lp inválido!");
+    }
+
+    const regex = new RegExp(`${o.print}-(\\d+)`, "i");
+    const matchResult = stdout.match(regex);
+
+    if (!matchResult) {
+      throw new Error("Nome da impressora e/ou ID do spool não encontrados.");
+    }
+
+    const id = Number(matchResult[1]);
+
+    if (Number.isNaN(id)) {
+      throw new Error("ID do spool não é um número válido.");
+    }
+
     const spool: Spool = {
-      id: stdout.match(/\w-(\d+)/)?.[1]
-        ? Number(stdout.match(/\w-(\d+)/)![1])
-        : 0,
+      id,
       user: o.user,
       print: o.print,
       copies: o.copies,
