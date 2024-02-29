@@ -1,13 +1,10 @@
 import { App, PageLog } from "../../app";
 import { LogMonitor } from "./LogMonitor";
-import EventEmitter from "events";
-const events = new EventEmitter();
 
 export async function startLog(app: App) {
   try {
-    const pageLog = new LogMonitor("/var/log/cups/page_log", events);
-    pageLog.start();
-    pageLog.events.on("log", (log: any) => {
+    const pageLog = new LogMonitor("/var/log/cups/page_log");
+    pageLog.onChange((log: any) => {
       try {
         const pageLog = JSON.parse(log) as PageLog;
         console.log("Paginas log::: ", pageLog);

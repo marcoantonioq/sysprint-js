@@ -1,18 +1,16 @@
 import * as fs from "fs";
-import { EventEmitter } from "events";
 
 export class LogMonitor {
   private filePath: string;
   private lastProcessedIndex: number;
   private watcher: fs.FSWatcher | null;
+  private changeCallbacks: ((data: string) => void)[] = [];
 
-  constructor(
-    filePath: string,
-    public events: EventEmitter = new EventEmitter()
-  ) {
+  constructor(filePath: string) {
     this.filePath = filePath;
     this.lastProcessedIndex = 0;
     this.watcher = null;
+    this.start();
   }
 
   start() {
@@ -24,6 +22,10 @@ export class LogMonitor {
       this.watcher.close();
       this.watcher = null;
     }
+  }
+
+  onChange(callback: (data: string) => void) {
+    this.changeCallbacks.push(callback);
   }
 
   private check() {
@@ -58,17 +60,23 @@ export class LogMonitor {
           this.lastProcessedIndex = 0;
           return;
         }
-        const logs = data.split("\n");
-        const newLogs = logs.slice(this.lastProcessedIndex);
-        for (const log of newLogs) {
-          if (log.trim() !== "") {
-            this.events.emit("log", log);
+        const values = data.split("\n");
+        const rows = values.slice(this.lastProcessedIndex);
+        for (const row of rows) {
+          if (row.trim() !== "") {
+            this.notifyChangeListeners(row);
           }
         }
-        this.lastProcessedIndex = logs.length - 1;
+        this.lastProcessedIndex = values.length - 1;
       } catch (error) {
-        console.log("Erro readFile:::", error);
+        console.error("Erro readFile:::", error);
       }
     });
+  }
+
+  private notifyChangeListeners(data: string) {
+    for (const callback of this.changeCallbacks) {
+      callback(data);
+    }
   }
 }
