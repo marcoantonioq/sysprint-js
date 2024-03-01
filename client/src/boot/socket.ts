@@ -1,9 +1,8 @@
 import { Notify } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import { Socket, io } from 'socket.io-client';
-import { Spool, app } from 'src/app';
+import { Printer, Spool, app } from 'src/app';
 import { runtime } from 'src/runtime';
-import { Printer } from 'typescript';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

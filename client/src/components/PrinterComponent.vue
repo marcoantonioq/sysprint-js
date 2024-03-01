@@ -174,6 +174,7 @@ const SPOOL = <Spool>{
   user: 'user',
   print: props.printer?.name || '',
   copies: 1,
+  printed: 0,
   range: ' ',
   sided: 'two-sided-long-edge',
   pages: 'all',
