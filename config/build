@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+hp-setup -i 10.11.0.67 -a

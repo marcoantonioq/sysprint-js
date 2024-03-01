@@ -7,7 +7,7 @@ export async function startLog(app: App) {
     pageLog.onChange((log: any) => {
       try {
         const pageLog = JSON.parse(log) as PageLog;
-        console.log("Paginas log::: ", pageLog);
+        // console.log("Paginas log::: ", pageLog);
       } catch (error) {
         console.log("Erro ao ler pagina no arquivo de log: ", error);
       }

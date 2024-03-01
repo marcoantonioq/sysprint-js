@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import { App, Printer, Spool } from "../../app";
-import { updatePrinterList } from "../../helpers/updatePrinterList";
-import { promises as fs, watch } from "fs";
-import { lp } from "../../helpers/lp";
+import { promises as fs } from "fs";
+import { lp } from "../../lib/lp";
+import { watch } from "vue";
 
 enum EVENTS {
   CONNECT = "connection",
@@ -16,12 +16,17 @@ enum EVENTS {
 }
 
 export async function setupSocketIO(io: Server, app: App): Promise<void> {
-  app.printers = await updatePrinterList();
-
   io.on("connection", (socket) => {
     socket.emit("msg", "Client conectado!");
 
-    socket.emit("printers", app.printers);
+    // socket.emit("printers", app.printers);
+    watch(
+      () => app.printers,
+      () => {
+        console.log("Enviando novas impressoras: ", app.printers.length);
+        socket.emit("printers", app.printers);
+      }
+    );
 
     socket.on(
       "sendPrint",

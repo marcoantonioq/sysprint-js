@@ -4,8 +4,8 @@ import path from "path";
 import fileUpload from "express-fileupload";
 import fs from "fs";
 import { App, Spool } from "../../app";
-import { updatePrinterList } from "../../helpers/updatePrinterList";
-import { lp } from "../../helpers/lp";
+import { updatePrinterList } from "../../lib/updatePrinterList";
+import { lp } from "../../lib/lp";
 
 export function setupRoutes(appExpress: Express, app: App): void {
   const messages = {

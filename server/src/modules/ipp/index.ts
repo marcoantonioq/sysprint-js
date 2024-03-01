@@ -1,8 +1,10 @@
 import ipp from "ipp";
 import { App } from "../../app";
+import { updatePrinterList } from "../../lib/updatePrinterList";
 
 export async function startIPP(app: App) {
   console.log("MODULO: IPP");
+  app.printers = await updatePrinterList();
 }
 
 // Endereço e porta do serviço CUPS
