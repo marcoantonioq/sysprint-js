@@ -16,6 +16,7 @@ export interface Spool {
   print: string;
   title?: string;
   copies?: number;
+  printed?: number;
   range?: string;
   pages?: "all" | "odd" | "even";
   sided?: "one-sided" | "two-sided-long-edge" | "two-sided-short-edge";
