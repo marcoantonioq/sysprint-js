@@ -156,7 +156,7 @@
 
 <script setup lang="ts">
 import { Printer, Spool } from 'src/app';
-import { sendPrinter } from 'src/boot/socket';
+import { sendPrint } from 'src/boot/socket';
 import { ref, reactive, computed, watch } from 'vue';
 
 const printerHTML = ref(null as HTMLInputElement | null);
@@ -164,9 +164,8 @@ const props = defineProps<{ printer: Printer | null }>();
 const dialog = computed(() => !!props.printer);
 
 const emit = defineEmits<{
-  send: [printer: Printer, spool: Spool];
+  send: [jobs: Spool[]];
   cancel: [printer: Printer | null];
-  printer: [printer: Printer, spool: Spool, files: File[]];
 }>();
 
 const SPOOL = <Spool>{
@@ -193,9 +192,20 @@ const data = reactive({
 });
 
 const printer = () => {
+  if (!props.printer) return;
   if (props.printer) {
-    emit('printer', props.printer, data.spool, data.files);
-    sendPrinter(props.printer, data.spool, data.files);
+    const jobs = data.files.map((file) => {
+      const job = JSON.parse(JSON.stringify(data.spool)) as Spool;
+      job.print = props.printer?.name || '';
+      job.status = 'send';
+      job.title = file.name;
+      job.buffer = file;
+      return job;
+    });
+    emit('send', jobs);
+    sendPrint(jobs, (jobs: Spool) => {
+      console.log('Retornado :', jobs);
+    });
     clear();
     cancel();
   }

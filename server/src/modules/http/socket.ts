@@ -30,29 +30,30 @@ export async function setupSocketIO(io: Server, app: App): Promise<void> {
 
     socket.on(
       "sendPrint",
-      async (
-        printer: Printer,
-        spool: Spool,
-        files: { filename: string; data: Buffer }[]
-      ) => {
-        console.log(`Recebido arquivo (${files[0].filename})`);
-        for (const { filename, data } of files) {
-          try {
-            const path = `${Date.now()}.pdf`;
-            await fs.writeFile(`uploads/${path}`, data);
-            spool.print = printer.name;
-            spool.title = filename;
-            spool.path = path;
-            const job = await lp(spool);
-            job.status = "printing";
-            app.spools.push(job);
-            console.log("Enviando impressão: ", job);
-            await fs.unlink(`uploads/${path}`);
-            socket.emit("job", job);
-          } catch (error) {
-            console.log("error::: ", error);
-          }
-        }
+      async (jobs: Spool[], call?: (jobs: Spool[]) => void) => {
+        const results = await Promise.all(
+          jobs.map(async (job) => {
+            if (job.buffer) {
+              job.path = `${Date.now()}${job.title?.replace(
+                /[^a-z0-9]/,
+                ""
+              )}.pdf`;
+              await fs.writeFile(`uploads/${job.path}`, job.buffer as Buffer);
+              const result = await lp(job);
+              job.id = result.id;
+              job.status = "printing";
+              await fs.unlink(`uploads/${job.path}`);
+              console.log("Enviando impressão: ", job);
+            } else {
+              console.log("Arquivo não enviado: ", job.title);
+            }
+            return job;
+          })
+        );
+        results.forEach((e) => {
+          app.spools.push(e);
+        });
+        if (call) call(results);
       }
     );
   });

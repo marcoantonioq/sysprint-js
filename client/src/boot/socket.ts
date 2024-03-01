@@ -52,18 +52,15 @@ socket?.on('job', (job: Spool) => {
   app.spools.push(job);
 });
 
-export function sendPrinter(printer: Printer, spool: Spool, files: File[]) {
-  socket?.emit(
-    'sendPrint',
-    printer,
-    spool,
-    files.map((file) => ({ filename: file.name, data: file }))
-  );
-  Notify.create({
-    type: 'positive',
-    message: 'Arquivo(s) enviado para impressora...',
-    position: 'top-right',
-    timeout: 15000,
+export function sendPrint(jobs: Spool[], call?: (jobs: Spool) => void) {
+  socket?.emit('sendPrint', jobs, (jobs: Spool) => {
+    const type = jobs.status === 'printed' ? 'positive' : 'negative';
+    Notify.create({
+      type,
+      message: 'Arquivo(s) enviado para impressora...',
+      position: 'top-right',
+    });
+    if (call) call(jobs);
   });
 }
 

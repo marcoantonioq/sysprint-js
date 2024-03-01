@@ -23,7 +23,7 @@ export interface Spool {
   media?: 'letter' | 'A3' | 'A4' | 'A5' | 'legal' | 'envelope' | 'photo';
   orientation?: '3' | '4' | '5' | '6' | 'N' | undefined;
   quality?: '3' | '4' | '5';
-  buffer?: Buffer;
+  buffer?: Buffer | File;
   path?: string;
   status?: 'send' | 'printing' | 'printed' | 'cancel';
   msgs: string[];
