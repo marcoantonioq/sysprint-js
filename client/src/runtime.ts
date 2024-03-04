@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { App, Printer } from './app';
+import { Printer } from './app';
 
 export const runtime = reactive({
   connected: navigator.onLine,

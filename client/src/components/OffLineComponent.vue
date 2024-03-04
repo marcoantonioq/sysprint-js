@@ -9,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import { app } from 'src/app';
 import { runtime } from 'src/runtime';
 </script>
 
