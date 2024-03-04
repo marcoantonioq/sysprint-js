@@ -7,6 +7,9 @@ import { watch } from "vue";
 enum EVENTS {
   CONNECT = "connection",
   MESSAGE = "message",
+  JOBS = "jobs",
+  PRINTERS = "printers",
+  SEND_PRINT = "sendPrint",
   ERROR = "error",
   EVENTOS = "eventos",
   SAVE = "save",
@@ -16,26 +19,28 @@ enum EVENTS {
 }
 
 export async function setupSocketIO(io: Server, app: App): Promise<void> {
-  io.on("connection", (socket) => {
-    socket.emit("msg", "Client conectado!");
+  io.on(EVENTS.CONNECT, (socket) => {
+    console.log(`ID: ${socket.id} entrou`);
+    socket.on("disconnect", () => {
+      console.info(`ID: ${socket.id} saiu`);
+    });
 
-    // socket.emit("printers", app.printers);
+    socket.emit(EVENTS.PRINTERS, app.printers);
     watch(
       () => app.printers,
       () => {
-        console.log("Enviando novas impressoras: ", app.printers.length);
-        socket.emit("printers", app.printers);
+        socket.emit(EVENTS.PRINTERS, app.printers);
       }
     );
 
     socket.on(
-      "sendPrint",
+      EVENTS.SEND_PRINT,
       async (jobs: Spool[], call?: (jobs: Spool[]) => void) => {
         const results = await Promise.all(
           jobs.map(async (job) => {
             if (job.buffer) {
               job.path = `${Date.now()}${job.title?.replace(
-                /[^a-z0-9]/,
+                /[^a-z0-9]/gi,
                 ""
               )}.pdf`;
               await fs.writeFile(`uploads/${job.path}`, job.buffer as Buffer);
@@ -56,12 +61,5 @@ export async function setupSocketIO(io: Server, app: App): Promise<void> {
         if (call) call(results);
       }
     );
-  });
-
-  io.sockets.on("connection", function (socket) {
-    console.log(`ID: ${socket.id} entrou`);
-    socket.on("disconnect", () => {
-      console.info(`ID: ${socket.id} saiu`);
-    });
   });
 }

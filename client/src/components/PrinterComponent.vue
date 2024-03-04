@@ -203,7 +203,7 @@ const printer = () => {
       return job;
     });
     emit('send', jobs);
-    sendPrint(jobs, (jobs: Spool) => {
+    sendPrint(jobs, (jobs: Spool[]) => {
       console.log('Retornado :', jobs);
     });
     clear();

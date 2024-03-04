@@ -1,7 +1,7 @@
 import { Notify } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import { Socket, io } from 'socket.io-client';
-import { Printer, Spool, app } from 'src/app';
+import { Spool, app } from 'src/app';
 import { runtime } from 'src/runtime';
 
 declare module '@vue/runtime-core' {
@@ -42,24 +42,29 @@ socket?.on('printers', (printers) => {
   app.printers = [...printers];
 });
 
-socket?.on('job', (job: Spool) => {
-  setTimeout(() => {
-    console.log('Novos trabalho de impressão terminado: ', job);
-    job.status = 'printed';
-    app.spools = [...app.spools];
-  }, 15000);
-
-  app.spools.push(job);
+socket?.on('jobs', (jobs: Spool[]) => {
+  console.log('Novos trabalho de impressão: ', jobs);
+  app.spools = jobs;
 });
 
-export function sendPrint(jobs: Spool[], call?: (jobs: Spool) => void) {
-  socket?.emit('sendPrint', jobs, (jobs: Spool) => {
-    const type = jobs.status === 'printed' ? 'positive' : 'negative';
-    Notify.create({
-      type,
-      message: 'Arquivo(s) enviado para impressora...',
-      position: 'top-right',
+export function sendPrint(jobs: Spool[], call?: (jobs: Spool[]) => void) {
+  socket?.emit('sendPrint', jobs, (jobs: Spool[]) => {
+    jobs.forEach((e) => {
+      const type =
+        e.status === 'printing' || e.status === 'printed'
+          ? 'positive'
+          : 'negative';
+      Notify.create({
+        type,
+        message: `Arquivo ${e.title} enviado para impressora...`,
+        position: 'top-right',
+      });
+      app.spools.push(e);
+      setTimeout(() => {
+        app.spools = [];
+      }, 15000);
     });
+
     if (call) call(jobs);
   });
 }

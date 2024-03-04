@@ -1,15 +1,13 @@
 <template>
-  <q-page>
-    <ListPrintersComponent
-      :printers="app.printers"
-      @selected="runtime.selected = $event"
-    />
-    <PrinterComponent
-      :printer="runtime.selected"
-      @cancel="runtime.selected = null"
-    />
-    <ListSpoolsComponent :spools="app.spools" />
-  </q-page>
+  <ListPrintersComponent
+    :printers="app.printers"
+    @selected="runtime.selected = $event"
+  />
+  <PrinterComponent
+    :printer="runtime.selected"
+    @cancel="runtime.selected = null"
+  />
+  <ListSpoolsComponent :spools="app.spools" />
 </template>
 
 <script setup lang="ts">

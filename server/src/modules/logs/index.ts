@@ -4,10 +4,19 @@ import { LogMonitor } from "./LogMonitor";
 export async function startLog(app: App) {
   try {
     const pageLog = new LogMonitor("/var/log/cups/page_log");
-    pageLog.onChange((log: any) => {
+    pageLog.onChange((logs: string) => {
       try {
-        const pageLog = JSON.parse(log) as PageLog;
-        // console.log("Paginas log::: ", pageLog);
+        const values = logs
+          .split("\n")
+          .map((e) => {
+            try {
+              return JSON.parse(e.replace(/\\/gi, ""));
+            } catch (error) {
+              console.log("Erro ao converter o valor do log: ", e);
+            }
+          })
+          .filter((e) => e);
+        console.log("LOGs: ", values);
       } catch (error) {
         console.log("Erro ao ler pagina no arquivo de log: ", error);
       }
