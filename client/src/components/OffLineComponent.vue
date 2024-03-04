@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="offline-indicator q-pa-sm text-center"
-    v-if="!runtime.connected || !app.printers.length"
-  >
+  <div class="offline-indicator q-pa-sm text-center" v-if="!runtime.connected">
     <q-icon name="wifi_off" color="red" size="150px" />
     <p>Você está offline!</p>
     <p>Verifique sua conexão com a internet ou procure o suporte técnico.</p>
