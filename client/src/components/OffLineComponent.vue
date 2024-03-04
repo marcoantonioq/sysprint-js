@@ -1,7 +1,7 @@
 <template>
   <div
     class="offline-indicator q-pa-sm text-center"
-    v-if="!runtime.connected || !runtime.app.printers"
+    v-if="!runtime.connected || !app.printers.length"
   >
     <q-icon name="wifi_off" color="red" size="150px" />
     <p>Você está offline!</p>
@@ -10,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+import { app } from 'src/app';
 import { runtime } from 'src/runtime';
 </script>
 

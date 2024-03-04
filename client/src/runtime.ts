@@ -5,7 +5,6 @@ export const runtime = reactive({
   connected: navigator.onLine,
   loading: false,
   admin: true,
-  app: <App>{},
   selected: null as Printer | null,
 });
 
