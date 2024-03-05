@@ -1,7 +1,4 @@
 <template>
-  <div class="q-ma-lg" v-show="!props.printers.length">
-    Nenhum impressora encontrada!
-  </div>
   <div class="row flex-center">
     <div
       class="printer column items-center q-ma-lg"
