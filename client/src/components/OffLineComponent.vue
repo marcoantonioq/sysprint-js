@@ -1,14 +1,12 @@
 <template>
   <div v-if="!runtime.connected" class="message">
     <q-icon name="wifi_off" color="red" size="150px" />
-    <p>
-      Verifique sua conexão com o servidor de impressão ou procure o suporte
-      técnico.
-    </p>
+    Verifique sua conexão com a internet.
   </div>
   <div v-else-if="app.printers.length === 0" class="message">
     <q-icon name="power_off" color="red" size="150px" />
-    Nenhuma impressora
+    Verifique sua conexão com o servidor de impressão ou procure o suporte
+    técnico.
   </div>
 </template>
 
