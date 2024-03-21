@@ -61,7 +61,7 @@ async function lp(o: Spool): Promise<Spool> {
     if (ps2PDFError) throw "Erro ao otimizar o pdf!";
 
     const commandParts = [
-      "lp",
+      "lp -o page-left=0 -o page-right=0 -o page-top=0 -o page-bottom=0",
       `-d ${escape(o.print)}`,
       `-n ${Number(o.copies)}`,
       o.user ? `-U ${escape(o.user)}` : "",

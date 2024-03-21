@@ -20,6 +20,7 @@ export async function startHTTP(app: App) {
   });
 
   appExpress.use(bodyParser.json());
+  appExpress.use(express.json({ limit: "1gb" }));
   appExpress.use(
     (err: Error, req: Request, res: Response, next: NextFunction) => {
       console.error(err.stack);

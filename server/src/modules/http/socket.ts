@@ -35,30 +35,39 @@ export async function setupSocketIO(io: Server, app: App): Promise<void> {
 
     socket.on(
       EVENTS.SEND_PRINT,
-      async (jobs: Spool[], call?: (jobs: Spool[]) => void) => {
-        const results = await Promise.all(
-          jobs.map(async (job) => {
-            if (job.buffer) {
-              job.path = `${Date.now()}${job.title?.replace(
-                /[^a-z0-9]/gi,
-                ""
-              )}.pdf`;
-              await fs.writeFile(`uploads/${job.path}`, job.buffer as Buffer);
-              const result = await lp(job);
-              job.id = result.id;
-              job.status = "printing";
-              await fs.unlink(`uploads/${job.path}`);
-              console.log("Enviando impressão: ", job);
-            } else {
-              console.log("Arquivo não enviado: ", job.title);
-            }
-            return job;
-          })
-        );
-        results.forEach((e) => {
-          app.spools.push(e);
-        });
-        if (call) call(results);
+      async (jobs: Spool[], file: Buffer, call?: (jobs: Spool[]) => void) => {
+        try {
+          console.log("JOB recebido: ", jobs, file);
+          const results = await Promise.all(
+            jobs.map(async (job) => {
+              try {
+                if (job.buffer) {
+                  job.path = `${Date.now()}${job.title?.replace(
+                    /[^a-z0-9]/gi,
+                    ""
+                  )}.pdf`;
+                  await fs.writeFile(`uploads/${job.path}`, file as Buffer);
+                  const result = await lp(job);
+                  job.id = result.id;
+                  job.status = "printing";
+                  await fs.unlink(`uploads/${job.path}`);
+                  console.log("Enviando impressão: ", job);
+                } else {
+                  console.log("Arquivo não enviado: ", job.title);
+                }
+              } catch (error) {
+                console.log("Erro ao enviar o arquivo: ", error);
+              }
+              return job;
+            })
+          );
+          results.forEach((e) => {
+            app.spools.push(e);
+          });
+          if (call) call(results);
+        } catch (error) {
+          console.log("Erro ao enviar impressão: ", error);
+        }
       }
     );
   });
