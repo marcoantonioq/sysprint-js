@@ -57,29 +57,17 @@ export function sendPrint(jobs: Spool[], call?: (jobs: Spool[]) => void) {
     const formData = new FormData();
     formData.append('data', JSON.stringify(job));
     formData.append('file', job.buffer as File);
-    const response = await axios.post('/api/print', formData, {
+    await axios.post('/api/print', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log('Resposta: ', response.data);
-    // socket?.emit('sendPrint', [job], file, (jobs: Spool[]) => {
-    //   const type =
-    //     job.status === 'printing' || job.status === 'printed'
-    //       ? 'positive'
-    //       : 'negative';
-    //   Notify.create({
-    //     type,
-    //     message: `Arquivo ${job.title} enviado para impressora...`,
-    //     position: 'top-right',
-    //   });
-    //   app.spools.push(job);
-    // });
-
-    setTimeout(() => {
-      app.spools = [];
-    }, 15000);
-
+    Notify.create({
+      type: 'positive',
+      message: `Arquivo ${job.title} enviado para impressora...`,
+      position: 'top-right',
+    });
+    // app.spools.push(job);
     if (call) call(jobs);
   });
 }
