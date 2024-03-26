@@ -1,4 +1,4 @@
-import { Notify } from 'quasar';
+import { Notify, Loading } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import { Socket, io } from 'socket.io-client';
 import { Spool, app } from 'src/app';
@@ -57,6 +57,15 @@ export function sendPrint(jobs: Spool[], call?: (jobs: Spool[]) => void) {
     const formData = new FormData();
     formData.append('data', JSON.stringify(job));
     formData.append('file', job.buffer as File);
+
+    Loading.show({
+      message:
+        'Enviando arquivo...<br/><span class="text-amber text-italic">Aguarde</span>',
+      html: true,
+    });
+    setTimeout(() => {
+      Loading.hide();
+    }, 30000);
     await axios.post('/api/print', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -67,6 +76,7 @@ export function sendPrint(jobs: Spool[], call?: (jobs: Spool[]) => void) {
       message: `Arquivo ${job.title} enviado para impressora...`,
       position: 'top-right',
     });
+    Loading.hide();
     // app.spools.push(job);
     if (call) call(jobs);
   });
