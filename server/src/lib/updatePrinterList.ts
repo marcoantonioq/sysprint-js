@@ -8,7 +8,7 @@ async function getPrinterNames(): Promise<string[]> {
   try {
     const { stdout, stderr } = await exec("/usr/bin/lpstat -a");
     if (stderr) {
-      throw new Error(`Erro ao obter a lista de impressoras: ${stderr}`);
+      throw new Error(`Falha ao obter a lista de impressoras: ${stderr}`);
     }
     if (typeof stdout !== "string") {
       throw new Error(
@@ -22,7 +22,7 @@ async function getPrinterNames(): Promise<string[]> {
       .map((line) => line.split(/\s+/)[0]);
   } catch (error) {
     throw new Error(
-      `Erro ao executar o comando ou não há impressora instalada: ${error}`
+      `Falha ao executar ou não há impressora instalada: ${error}`
     );
   }
 }
@@ -31,7 +31,7 @@ async function getPrinterDetails(printerName: string): Promise<Printer> {
   try {
     const { stdout, stderr } = await exec(`lpstat -l -p ${printerName}`);
     if (stderr) {
-      throw new Error(`Erro encontrado: ${stderr}`);
+      throw new Error(`Falha encontrado: ${stderr}`);
     }
 
     const details: Printer = {
@@ -66,7 +66,7 @@ async function getPrinterDetails(printerName: string): Promise<Printer> {
 
     return details;
   } catch (error) {
-    console.error("Erro ao obter dados de impressora:", error);
+    console.error("Falha ao obter dados de impressora:", error);
     return {
       name: printerName,
       status: "",
@@ -87,7 +87,7 @@ async function updatePrinterList(): Promise<Printer[]> {
 
     return printers;
   } catch (error) {
-    console.error("Erro ao atualizar a lista de impressoras:", error);
+    console.error("Falha ao atualizar a lista de impressoras:", error);
     return [];
   }
 }

@@ -28,7 +28,7 @@ export async function startHTTP(app: App) {
     }
   );
 
-  await setupRoutes(appExpress, app);
+  setupRoutes(appExpress, app);
   await setupSocketIO(io, app);
 
   server.listen(port, () => {
@@ -36,7 +36,7 @@ export async function startHTTP(app: App) {
       "######################################################################";
     console.log(`\x1b[32m\n${hr}\n\n🌟 Socket.IO na porta ${port}! 🌟\x1b[0m`);
     console.log(
-      `\x1b[32m🚀 Acesse o painel administrativo http://localhost:${port}/ 🚀\n\n${hr}\x1b[0m`
+      `\x1b[32m🚀 Acesse o painel adm http://localhost:${port}/ 🚀\n\n${hr}\x1b[0m`
     );
   });
 

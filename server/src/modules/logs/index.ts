@@ -1,7 +1,7 @@
-import { App, PageLog } from "../../app";
+import { App } from "../../app";
 import { LogMonitor } from "./LogMonitor";
 
-export async function startLog(app: App) {
+export async function startLog(_app: App) {
   try {
     const pageLog = new LogMonitor("/var/log/cups/page_log");
     pageLog.onChange((logs: string) => {
@@ -12,16 +12,16 @@ export async function startLog(app: App) {
             try {
               return JSON.parse(e.replace(/\\/gi, ""));
             } catch (error) {
-              console.log("Erro ao converter o valor do log: ", e);
+              console.log("Falha ao converter o valor do log: ", e);
             }
           })
           .filter((e) => e);
         console.log("LOGs: ", values);
       } catch (error) {
-        console.log("Erro ao ler pagina no arquivo de log: ", error);
+        console.log("Falha ao ler pagina no arquivo de log: ", error);
       }
     });
   } catch (error) {
-    console.log("Errro ao iniciar o log arquivo: ", error);
+    console.log("Falha ao iniciar o log arquivo: ", error);
   }
 }

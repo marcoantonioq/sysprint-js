@@ -13,6 +13,9 @@
         style="font-size: 5em"
       />
       <b> {{ printer.name.toUpperCase().replace(/(_|-)/gi, ' ') }}</b>
+      <div style="display: none" :class="{'pause': !!printer.info }">
+        pause...
+      </div>
     </div>
   </div>
 </template>
@@ -61,5 +64,10 @@ const selected = (printer: Printer) => {
   100% {
     transform: rotate(0deg);
   }
+}
+
+.pause {
+  display: block !important;
+
 }
 </style>

@@ -5,13 +5,16 @@ import { updatePrinterList } from "../../lib/updatePrinterList";
 export async function startIPP(app: App) {
   console.log("MODULO: IPP");
   app.printers = await updatePrinterList();
+  setInterval(async () => {
+    app.printers = await updatePrinterList();
+  }, 60000);
 }
 
 // Endereço e porta do serviço CUPS
 const CUPS_HOST = "http://localhost:631";
 
 // Crie uma nova conexão com o serviço CUPS
-const printer = new ipp.Printer(`${CUPS_HOST}/printers/ADM`);
+new ipp.Printer(`${CUPS_HOST}/printers/ADM`);
 
 // printer.execute(
 //   "Get-Job-Attributes",

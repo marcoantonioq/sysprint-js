@@ -8,10 +8,10 @@ import { lp } from "../../lib/lp";
 import multer from "multer";
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function(req, file, cb) {
     cb(null, "uploads/");
   },
-  filename: function (req, file, cb) {
+  filename: function(req, file, cb) {
     const ext = path.extname(file.originalname);
     cb(null, Date.now() + ext);
   },
@@ -19,13 +19,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-export function setupRoutes(appExpress: Express, app: App): void {
-  const messages = {
-    successSettings: "Configurações alteradas com sucesso!",
-    invalidToken: "Token anterior inválido!",
-  };
+export function setupRoutes(appExpress: Express, _app: App): void {
+  // const messages = {
+  //   successSettings: "Configurações alteradas com sucesso!",
+  //   invalidToken: "Token anterior inválido!",
+  // };
 
-  appExpress.use((req: any, res: any, next: NextFunction) => {
+  appExpress.use((_req: any, _res: any, next: NextFunction) => {
     next();
   });
 
@@ -51,7 +51,7 @@ export function setupRoutes(appExpress: Express, app: App): void {
         if (job.path) await fs.unlink(`uploads/${job.path}`);
         console.log("Enviando impressão: ", job);
       } catch (error) {
-        console.log("Erro ao relizar a impressão: ", req.body, error);
+        console.log("Falha ao relizar a impressão: ", req.body, error);
       }
       res.json(results);
     }
@@ -62,7 +62,7 @@ export function setupRoutes(appExpress: Express, app: App): void {
       const printers = await updatePrinterList();
       res.json({ printers });
     } catch (error) {
-      console.log(`Erro ao realizar buscar impressoras: ${error}`);
+      console.log(`Falha ao realizar buscar impressoras: ${error}`);
     }
   });
 }
@@ -75,10 +75,7 @@ async function createFolder(path: string) {
       await fs.mkdir(path, { recursive: true });
       console.log("Pasta criada com sucesso:", path);
     } catch (err) {
-      console.error("Erro ao criar a pasta:", err);
+      console.error("Falha ao criar a pasta:", err);
     }
   }
-}
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
