@@ -13,8 +13,8 @@
         style="font-size: 5em"
       />
       <b> {{ printer.name.toUpperCase().replace(/(_|-)/gi, ' ') }}</b>
-      <div style="display: none" :class="{'pause': !!printer.info }">
-        pause...
+      <div style="display: none" :class="{ pause: !!printer.info }">
+        parada...
       </div>
     </div>
   </div>
@@ -68,6 +68,5 @@ const selected = (printer: Printer) => {
 
 .pause {
   display: block !important;
-
 }
 </style>

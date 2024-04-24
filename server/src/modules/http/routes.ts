@@ -6,12 +6,13 @@ import { App, Spool } from "../../app";
 import { updatePrinterList } from "../../lib/updatePrinterList";
 import { lp } from "../../lib/lp";
 import multer from "multer";
+import { ADAuthentication } from "./login/ad";
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, "uploads/");
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
     cb(null, Date.now() + ext);
   },
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-export function setupRoutes(appExpress: Express, _app: App): void {
+export function setupRoutes(appExpress: Express, app: App): void {
   // const messages = {
   //   successSettings: "Configurações alteradas com sucesso!",
   //   invalidToken: "Token anterior inválido!",
@@ -56,6 +57,57 @@ export function setupRoutes(appExpress: Express, _app: App): void {
       res.json(results);
     }
   );
+  appExpress.post("/api/validateToken", async (req: Request, res: Response) => {
+    const result = {
+      msg: "",
+      error: "",
+      token: "",
+    };
+    const { token } = req.body;
+    const adAuth = new ADAuthentication({
+      host: app.auth.ad.host,
+      secretKey: app.system.token,
+    });
+    const valid = await adAuth.validToken(token);
+    if (valid) {
+      result.msg = `Token válido!`;
+    } else {
+      result.error = "Token inválido!";
+    }
+    result.token = token;
+    res.json(result);
+  });
+
+  appExpress.post("/api/login", async (req: Request, res: Response) => {
+    const result = {
+      msg: "",
+      error: "",
+      token: "",
+    };
+
+    try {
+      const { username, password } = req.body;
+      const adAuth = new ADAuthentication({
+        host: app.auth.ad.host,
+        username: `${username}@${app.auth.ad.domain}`,
+        password,
+        secretKey: app.system.token,
+      });
+      result.token = await adAuth.authenticate(
+        `${username}@${app.auth.ad.domain}`,
+        password
+      );
+      if (result.token) {
+        result.msg = "Usuário autenticado com sucesso!";
+      } else {
+        result.error = "Credenciais inválidas";
+      }
+    } catch (error) {
+      result.error = "Falha ao logar!";
+    }
+
+    res.json(result);
+  });
 
   appExpress.get("/api/printers", async (req: Request, res: Response) => {
     try {

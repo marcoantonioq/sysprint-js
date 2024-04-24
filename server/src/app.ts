@@ -56,10 +56,10 @@ export interface App {
   auth: {
     enable: boolean;
     ad: {
-      url: string;
+      host: string;
       baseDN: string;
-      username: string;
-      password: string;
+      domain: string;
+      enable: boolean;
     };
   };
 }
@@ -70,16 +70,16 @@ export const app = reactive<App>({
   system: {
     rebooting: false,
     saving: false,
-    token: "",
+    token: "secretKey",
     port: "3000",
   },
   auth: {
     enable: true,
     ad: {
-      url: "ldap://10.11.0.16",
+      host: "10.11.0.16",
       baseDN: "dc=ifg,dc=br",
-      username: "1934155",
-      password: "",
+      domain: "ifg.br",
+      enable: true,
     },
   },
 });

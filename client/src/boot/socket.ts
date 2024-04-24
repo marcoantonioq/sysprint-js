@@ -63,23 +63,47 @@ export function sendPrint(jobs: Spool[], call?: (jobs: Spool[]) => void) {
         'Enviando arquivo...<br/><span class="text-amber text-italic">Aguarde</span>',
       html: true,
     });
+
     setTimeout(() => {
       Loading.hide();
     }, 30000);
+
     await axios.post('/api/print', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
+
     Notify.create({
       type: 'positive',
       message: `Arquivo ${job.title} enviado para impressora...`,
       position: 'top-right',
     });
+
     Loading.hide();
     // app.spools.push(job);
     if (call) call(jobs);
   });
+}
+
+export async function validateToken() {
+  const token = localStorage.getItem('token');
+  const response = await axios.post('/api/validateToken', {
+    token,
+  });
+  if (!response.data.token) {
+    return false;
+  }
+  // console.log('Token é valido:: ', response.data, token);
+  return true;
+}
+
+export async function login({ username = '', password = '' }) {
+  const response = await axios.post('/api/login', { username, password });
+  const { token } = response.data;
+  console.log('Resultado login: ', response.data);
+  localStorage.setItem('token', token);
+  return token;
 }
 
 export { socket };
