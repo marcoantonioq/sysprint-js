@@ -1,11 +1,21 @@
-version: "3.8"
-
 services:
-  sysprint:
-    container_name: sysprint
-    image: sysprint
+  sysprint-client:
+    container_name: sysprint-client
+    image: sysprint-client
     build:
-      context: .
+      context: sysprint-client
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./data:/data
+      - ./sysprint-client:/app
+    networks:
+      - sysprint-network
+  sysprint-server:
+    container_name: sysprint-server
+    image: sysprint-server
+    build:
+      context: sysprint-server
       dockerfile: Dockerfile
       args:
         ADMIN_USER: admin
@@ -17,13 +27,28 @@ services:
       - cups-spool:/var/spool/cups
       - cups-data:/usr/share/cups
       - smb-conf:/etc/samba
+      - ./data:/data
+      - ./sysprint-server:/app
     ports:
-      - "631:631"
-      - "80:3000"
-
+      - "632:631"
+    networks:
+      - sysprint-network
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - sysprint-network
+    restart: always
 volumes:
   cups-config:
   cups-logs:
   cups-spool:
   cups-data:
   smb-conf:
+networks:
+  sysprint-network:
+    driver: bridge

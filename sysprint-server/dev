@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "Iniciando cupsd..."
+/usr/sbin/cupsd
+# /usr/sbin/smbd
+# /usr/sbin/nmbd
+
+npm install
+npx nodemon --watch src --exec node src/index.js
