@@ -76,6 +76,8 @@ export default defineConfig((/* ctx */) => {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
       // https: true,
+      port: 9000,
+      allowedHosts: ['print.goias.ifg.edu.br'],
       open: false,
       // proxy: {
       //   '/socket.io': {
