@@ -45,3 +45,9 @@ Dentro do container, execute o comando para configurar a impressora (exemplo par
 ```sh
 hp-setup -i <ip>
 ```
+
+#### Outras configurações:
+
+```sh
+lpadmin -p NomeDaImpressora -o printer-error-policy=retry-job
+```

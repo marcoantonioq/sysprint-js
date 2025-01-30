@@ -27,7 +27,7 @@ export async function setupSocketIO(io, app) {
     watch(
       () => app.printers,
       () => {
-        console.log('Enviando novas impressoras...', app.printers)
+        // console.log('Enviando novas impressoras...', app.printers)
         socket.emit(EVENTS.PRINTERS, app.printers)
       }
     )
