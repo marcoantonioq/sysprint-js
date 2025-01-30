@@ -1,5 +1,6 @@
 server/uploads/*
 data/*
+.env
 # Logs
 *.log
 npm-debug.log*

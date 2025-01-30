@@ -1,2 +1,4 @@
 #!/bin/sh
-npm run
+npm install
+npx quasar build
+npx quasar serve

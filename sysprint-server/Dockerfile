@@ -4,9 +4,11 @@ LABEL maintainer="Marco Antônio <ti.goias@ifg.edu.br>"
 # Variáveis
 ARG ADMIN_USER
 ARG ADMIN_PASS
+ARG NODE_ENV
 ENV TZ="America/Sao_Paulo" \
     LANG="pt_BR.UTF-8" \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    NODE_ENV=${NODE_ENV}
 
 # Pacotes
 RUN apt-get update && apt-get install -y \
@@ -31,4 +33,4 @@ WORKDIR /app
 
 EXPOSE 3000 136 137 138 139 445 631
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "if [ \"$NODE_ENV\" = 'production' ]; then npm start; else npm run dev; fi"]

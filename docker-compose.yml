@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   sysprint-client:
     container_name: sysprint-client
@@ -5,6 +6,8 @@ services:
     build:
       context: sysprint-client
       dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
     restart: always
     volumes:
       - ./data:/data
@@ -20,6 +23,7 @@ services:
       args:
         ADMIN_USER: admin
         ADMIN_PASS: cupsadmin
+        NODE_ENV: ${NODE_ENV}
     restart: always
     volumes:
       - cups-config:/etc/cups

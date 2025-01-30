@@ -7,6 +7,13 @@ export const LogLevel = {
   DEBUG: 'DEBUG',
 }
 
+const LogIcons = {
+  INFO: 'ℹ️',
+  WARN: '⚠️',
+  ERROR: '❌',
+  DEBUG: '🐛',
+}
+
 function appendLogToFile(message) {
   try {
     fs.appendFileSync('/data/log', message + '\n')
@@ -29,7 +36,8 @@ export const logger = {
 
   log(message, logLevel = LogLevel.INFO) {
     const timestamp = getFormattedTimestamp()
-    const logMessage = `[${timestamp}] [${logLevel}] ${message}`
+    const logIcon = LogIcons[logLevel] || ''
+    const logMessage = `[${timestamp}] [${logLevel}] ${logIcon} ${message}`
     console.log(logMessage)
     appendLogToFile(logMessage)
   },
