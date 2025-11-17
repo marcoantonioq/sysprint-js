@@ -19,53 +19,14 @@ function escape(value) {
   return result;
 }
 
-function validateSpoolRequest(o) {
-  if (!o || typeof o !== "object") return false;
-
-  const requiredFields = ["print", "copies", "path", "user"];
-  for (const field of requiredFields) {
-    if (
-      !(field in o) ||
-      (typeof o[field] !== "string" && typeof o[field] !== "number")
-    ) {
-      return false;
-    }
-  }
-
-  const validPages = !o.pages || ["all", "odd", "even"].includes(o.pages);
-  const validSided =
-    !o.sided ||
-    ["one-sided", "two-sided-long-edge", "two-sided-short-edge"].includes(
-      o.sided
-    );
-  const validMedia =
-    !o.media ||
-    ["letter", "A3", "A4", "A5", "legal", "envelope", "photo"].includes(
-      o.media
-    );
-  const validOrientation =
-    !o.orientation || ["portrait", "landscape"].includes(o.orientation);
-  const validQuality = !o.quality || ["3", "4", "5"].includes(o.quality);
-
-  return (
-    validPages && validSided && validMedia && validOrientation && validQuality
-  );
-}
-
 async function lp(o) {
   let newPath = "";
   try {
     await ensureUploadsDir();
 
-    // if (!validateSpoolRequest(o)) {
-    //   throw new Error("Parâmetros inválidos!");
-    // }
     if (!o.path) {
       throw new Error("Arquivo não encontrado!");
     }
-
-    // Otimizando PDF
-    console.log("Arquivo: ", o.path);
 
     newPath = `/data/uploads/${o.path.replace(/[^0-9]/gi, "")}2.pdf`;
     await exec(`ps2pdf /data/uploads/${o.path} ${newPath}`);
@@ -83,6 +44,7 @@ async function lp(o) {
         ? `-o page-ranges=${escape(o.range.replace(/[^0-9,-]/gi, ""))}`
         : "",
       o.sided ? `-o sides=${escape(o.sided)}` : "",
+      o.sided.includes("wo-sided-short-edge") ? "-o landscape" : "",
       o.pages ? `-o page-set=${escape(o.pages)}` : "",
       o.media ? `-o media=${escape(o.media)}` : "",
       o.quality ? `-o print-quality=${escape(o.quality)}` : "",
