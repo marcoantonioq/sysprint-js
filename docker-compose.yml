@@ -11,8 +11,6 @@ services:
     volumes:
       - ./data:/data
       - ./sysprint-client:/app
-    networks:
-      - sysprint-network
 
   sysprint-server:
     container_name: sysprint-server
@@ -35,8 +33,6 @@ services:
       - ./sysprint-server:/app
     ports:
       - "632:631"
-    networks:
-      - sysprint-network
 
   nginx:
     image: nginx:latest
@@ -46,8 +42,6 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - sysprint-network
     restart: always
 volumes:
   cups-config:
@@ -55,6 +49,3 @@ volumes:
   cups-spool:
   cups-data:
   smb-conf:
-networks:
-  sysprint-network:
-    driver: bridge
