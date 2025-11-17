@@ -40,7 +40,7 @@
 
           <div class="text-left">
             <div class="label">Frete e Verso:</div>
-            <q-radio v-model="data.spool.sided" val="one-sided" label="Não" />
+            <q-radio v-model="data.spool.sided" val="" label="Não" />
             <q-radio v-model="data.spool.sided" val="two-sided-long-edge" label="Retrato" />
             <q-radio v-model="data.spool.sided" val="two-sided-short-edge" label="Paisagem" />
           </div>
